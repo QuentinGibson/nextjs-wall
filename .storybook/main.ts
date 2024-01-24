@@ -9,7 +9,6 @@ const config: StorybookConfig = {
     "@storybook/addon-interactions",
     "@storybook/addon-themes",
   ],
-  features: { experimentalRSC: true },
   framework: {
     name: "@storybook/nextjs",
     options: {},
@@ -18,5 +17,6 @@ const config: StorybookConfig = {
     autodocs: "tag",
   },
   staticDirs: ["../public"],
+  features: { experimentalRSC: true },
 };
 export default config;
