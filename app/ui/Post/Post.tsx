@@ -19,7 +19,9 @@ export async function Post({
 }: PostProps) {
   return (
     // TODO: Add Diasy UI border color
-    <div className={`post-body border border-base-300 p-4 bg-base-100`}>
+    <div
+      className={`post-body border border-base-300 p-4 bg-base-100 md:h-[240px] flex`}
+    >
       <div className="flex flex-col md:flex-row gap-7">
         <div className="avatar justify-center items-center">
           <div className="rounded-full w-24 h-24">
@@ -31,11 +33,15 @@ export async function Post({
             />
           </div>
         </div>
-        <div className={`flex flex-col justify-center gap-5 flex-1`}>
+        <div className={`flex flex-col gap-5 flex-1 justify-between`}>
           <p className={`text-2xl leading-5 ${silkscreen.className}`}>
             {subject}
           </p>
-          <p className={`text-base leading-5 ${sans.className}`}>{content}</p>
+          <p
+            className={`text-base leading-5 ${sans.className} overflow-ellipsis h-[130px]`}
+          >
+            {content}
+          </p>
           <div className="flex items-center gap-3">
             {/* TODO: Add like function via a button element */}
             {liked ? (
