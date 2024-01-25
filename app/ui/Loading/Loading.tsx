@@ -1,10 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import StartScreen from "../StartScreen/StartScreen";
 
 export default function Loading() {
   const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(100);
-  return isLoading ? <LoadingScreen progress={progress} /> : <StartScreen />;
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  });
+  return isLoading ? <LoadingScreen /> : <StartScreen />;
 }

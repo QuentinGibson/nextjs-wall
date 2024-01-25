@@ -1,14 +1,14 @@
 import { Meta, StoryObj } from "@storybook/react";
-import StartScreen from "./StartScreen";
+import Loading from "./Loading";
 
 const meta = {
-  title: "component/Start",
-  component: StartScreen,
+  title: "screen/loading",
+  component: Loading,
 } as Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof StartScreen>;
+type Story = StoryObj<typeof Loading>;
 
 export const Default: Story = {
   args: {},

@@ -1,12 +1,18 @@
-const LoadingScreen = async ({ progress }: { progress: number }) => {
+import { silkscreen } from "../../fonts";
+
+const LoadingScreen = async () => {
   return (
-    <div className="w-full h-10 flex relative">
-      <div
-        style={{ transform: `translateX(-${progress}%)` }}
-        className={`w-full bg-primary h-full z-10`}
-      ></div>
-      <div className="w-full bg-base-300 absolute h-full"></div>
-    </div>
+    <>
+      <div className="flex flex-col justify-center items-center w-screen h-screen">
+        <p className={`${silkscreen.className} text-xl`}>Loading...</p>
+        <div className="w-full max-w-xl h-10 flex relative overflow-hidden">
+          <div
+            className={`w-full max-w-xl bg-primary h-full z-10 animate-loading`}
+          ></div>
+          <div className="w-full bg-base-300 absolute h-full"></div>
+        </div>
+      </div>
+    </>
   );
 };
 
