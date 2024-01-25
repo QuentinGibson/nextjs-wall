@@ -22,7 +22,7 @@ export async function Post({
     <div
       className={`post-body border border-base-300 p-4 bg-base-100 md:h-[240px] flex`}
     >
-      <div className="flex flex-col md:flex-row gap-7">
+      <div className="flex flex-col md:flex-row gap-7 flex-grow">
         <div className="avatar justify-center items-center">
           <div className="rounded-full w-24 h-24">
             <Image
@@ -38,7 +38,7 @@ export async function Post({
             {subject}
           </p>
           <p
-            className={`text-base leading-5 ${sans.className} overflow-ellipsis h-[130px]`}
+            className={`text-base leading-5 ${sans.className} overflow-auto h-[130px]`}
           >
             {content}
           </p>
