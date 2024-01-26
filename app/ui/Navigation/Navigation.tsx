@@ -1,79 +1,86 @@
-export default async function Navigation() {
+import Link from "next/link";
+
+const Navlinks = [
+  { label: "Home", route: "/" },
+  { label: "About", route: "/about" },
+  { label: "Contact", route: "/contact" },
+];
+
+export default async function Navigation({
+  pageTitle,
+  children,
+}: {
+  pageTitle: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="navbar bg-base-100">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <div className="drawer">
+      <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+      <div className="drawer-content flex flex-col">
+        {/* Navbar */}
+        <div className="w-full navbar bg-base-100">
+          <div className="flex-none lg:hidden">
+            <label
+              htmlFor="my-drawer-3"
+              aria-label="open sidebar"
+              className="btn btn-square btn-ghost"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h7"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="inline-block w-6 h-6 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </label>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a>Homepage</a>
-            </li>
-            <li>
-              <a>Portfolio</a>
-            </li>
-            <li>
-              <a>About</a>
-            </li>
-          </ul>
+          <div className="flex-1 px-2 mx-2">
+            <div className="flex flex-col">
+              <p>Quentin Gibson</p>
+              <p>{pageTitle}</p>
+            </div>
+          </div>
+          <div className="flex-none hidden lg:block">
+            <ul className="menu menu-horizontal">
+              {/* Navbar menu content here */}
+              {Navlinks.map((link, index) => (
+                <li key={index}>
+                  <Link href={link.route}>{link.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
+        {/* Page content here */}
+        {children}
       </div>
-      <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
-      </div>
-      <div className="navbar-end">
-        <button className="btn btn-ghost btn-circle">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </button>
-        <button className="btn btn-ghost btn-circle">
-          <div className="indicator">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      <div className="drawer-side">
+        <ul className="menu p-4 w-80 min-h-full bg-base-200">
+          <div className="flex">
+            <label
+              htmlFor="my-drawer-3"
+              aria-label="close sidebar"
+              className="drawer-overlay btn btn-square btn-ghost"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            <span className="badge badge-xs badge-primary indicator-item"></span>
+              X
+            </label>
           </div>
-        </button>
+
+          {/* Sidebar content here */}
+          {Navlinks.map((link, index) => (
+            <li key={index}>
+              <Link className="ml-2" href={link.route}>
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
