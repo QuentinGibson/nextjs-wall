@@ -16,7 +16,18 @@ export const Default: Story = {
     artist: "J-Cole",
     content:
       "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh viverra non semper suscipit posuere a pede",
-    cover: "/album/the_off_season.png",
+    cover: "/albums/the_off_season.png",
     flipped: false,
+  },
+};
+
+export const Flipped: Story = {
+  args: {
+    name: "The Heart Part 5",
+    artist: "Kendrick Lamar",
+    content:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh viverra non semper suscipit posuere a pede",
+    cover: "/albums/mr-morale-the-big-steppers.webp",
+    flipped: true,
   },
 };
