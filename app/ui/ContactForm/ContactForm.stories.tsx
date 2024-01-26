@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import ContactForm from "./ContactForm";
 
 const meta = {
-  title: "componet/ContactForm",
+  title: "component/ContactForm",
   component: ContactForm,
   decorators: [
     (Story: any) => (
