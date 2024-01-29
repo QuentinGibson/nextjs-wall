@@ -1,7 +1,8 @@
-import type { Preview } from "@storybook/react";
-import Layout from "../app/layout";
+import type { Preview, ReactRenderer } from "@storybook/react";
+import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import "../app/globals.css";
 import React from "react";
+import { Layout } from "../app/layout";
 
 const preview: Preview = {
   parameters: {
@@ -14,11 +15,12 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story) => (
-      <Layout>
-        <Story />
-      </Layout>
-    ),
+    (Story: any) => <Layout>{Story()}</Layout>,
+    // withThemeByDataAttribute<ReactRenderer>({
+    //   themes: { valentine: "valentine", dark: "dark" },
+    //   defaultTheme: "valentine",
+    //   attributeName: "data-theme",
+    // }),
   ],
 };
 

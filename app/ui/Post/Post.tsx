@@ -7,15 +7,17 @@ interface PostProps {
   avatar: string;
   subject: string;
   content: string;
-  hearts: number;
+  likes: number;
   liked: boolean;
+  likeDispatch?: (payload: any) => void;
 }
 export async function Post({
   avatar,
   subject,
   content,
-  hearts,
+  likes,
   liked,
+  likeDispatch,
 }: PostProps) {
   return (
     // TODO: Add Diasy UI border color
@@ -44,16 +46,25 @@ export async function Post({
           </p>
           <div className="flex items-center gap-3">
             {/* TODO: Add like function via a button element */}
-            {liked ? (
-              <HeartIconSolid className="text-red-500" width={24} height={24} />
-            ) : (
-              <HeartIconOutline
-                className="text-base-content"
-                width={24}
-                height={24}
-              />
-            )}
-            <span className={`${silkscreen.className}`}>{hearts}</span>
+            <form action={likeDispatch?.bind(null, liked)}>
+              <button type="submit">
+                {liked ? (
+                  <HeartIconSolid
+                    className="text-red-500"
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <HeartIconOutline
+                    className="text-base-content"
+                    width={24}
+                    height={24}
+                  />
+                )}
+              </button>
+            </form>
+
+            <span className={`${silkscreen.className}`}>{likes}</span>
           </div>
         </div>
       </div>

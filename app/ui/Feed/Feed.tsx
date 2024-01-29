@@ -12,7 +12,7 @@ export default async function Feed({ posts }: FeedProps) {
             key={id}
             subject={subject}
             content={content}
-            hearts={hearts}
+            likes={hearts}
             liked={liked}
             avatar={avatar}
           />

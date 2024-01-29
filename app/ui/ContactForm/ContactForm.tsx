@@ -1,62 +1,68 @@
-import { silkscreen } from "../../fonts";
+import { useFormStatus } from "react-dom";
+import { Press_Start } from "@/app/fonts";
 
 interface ContactFormProps {
   errorMessage?: any;
-  dispatch: () => Promise<string | void>;
-  pending?: boolean;
+  dispatch: (payload: FormData) => void;
 }
 export default async function ContactForm({
   errorMessage,
   dispatch,
-  pending = false,
 }: ContactFormProps) {
   return (
     <form
       action={dispatch}
-      className="bg-base-100 max-w-md mx-auto p-6 rounded-xl text-base-content border border-secondary"
+      className="max-w-md p-6 mx-auto border bg-base-100 rounded-xl text-base-content border-secondary"
     >
-      <p className={`text-xl ${silkscreen.className}`}>Say Hello</p>
+      <p className={`text-xl "${Press_Start.className}"`}>Say Hello</p>
       <div className="flex flex-col gap-4">
-        <label className="form-control w-full max-w-xs">
+        <label className="w-full max-w-xs form-control">
           <div className="label">
             <span className="label-text">Name</span>
           </div>
           <input
-            className="input input-bordered w-full max-w-xs rounded-md"
+            className="w-full max-w-xs rounded-md input input-bordered"
             placeholder="John Doe"
             type="text"
           />
         </label>
-        <label className="form-control w-full max-w-xs">
+        <label className="w-full max-w-xs form-control">
           <div className="label">
             <span className="label-text">Email</span>
           </div>
           <input
-            className="input input-bordered w-full max-w-xs rounded-md"
+            className="w-full max-w-xs rounded-md input input-bordered"
             placeholder="email@example.com"
             type="email"
           />
         </label>
-        <label htmlFor="" className="form-control w-full max-w-sm">
+        <label htmlFor="" className="w-full max-w-sm form-control">
           <div className="label">
             <span className="label-text">Message</span>
           </div>
           <textarea
             name="message"
-            className="textarea textarea-bordered h-32 w-full max-w-sm rounded-md"
+            className="w-full h-32 max-w-sm rounded-md textarea textarea-bordered"
             placeholder="Enter message"
           />
         </label>
-        <button
-          className="btn btn-secondary text-base-content w-48"
-          type="submit"
-          disabled={pending}
-          aria-disabled={pending}
-        >
-          Send
-        </button>
+        <SubmitButton />
       </div>
       {errorMessage && <p>{errorMessage}</p>}
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      className="w-48 btn btn-secondary text-base-content"
+      type="submit"
+      aria-disabled={pending}
+      disabled={pending}
+    >
+      Send
+    </button>
   );
 }

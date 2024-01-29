@@ -19,7 +19,8 @@ type Story = StoryObj<typeof ContactForm>;
 
 export const Default: Story = {
   args: {
-    dispatch: async () => {},
-    pending: false,
+    dispatch: (payload: FormData) => {
+      console.table(payload);
+    },
   },
 };
