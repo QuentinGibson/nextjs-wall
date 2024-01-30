@@ -13,7 +13,7 @@ interface SignInFormProps {
       password: string[] | undefined;
     } | null;
   };
-  dispatch: (payload: any) => void;
+  dispatch: (payload: FormData) => Promise<void>;
 }
 
 export default function SigninForm({ state, dispatch }: SignInFormProps) {
@@ -35,12 +35,14 @@ export default function SigninForm({ state, dispatch }: SignInFormProps) {
               className="input w-full max-w-xs bg-base-200"
               name="email"
             />
-            {state.errors?.email && (
-              <div className="label">
-                <span className="label-text-alt">{state.errors.email}</span>
-              </div>
-            )}
           </div>
+          {state.errors?.email && (
+            <div className="label">
+              <span className="label-text-alt text-error">
+                {state.errors.email}
+              </span>
+            </div>
+          )}
         </label>
         <label className="form-control w-full">
           <div className="label">
@@ -54,20 +56,22 @@ export default function SigninForm({ state, dispatch }: SignInFormProps) {
               className="input w-full max-w-xs bg-base-200"
               name="password"
             />
-            {state.errors?.password && (
-              <div className="label">
-                <span className="label-text-alt">{state.errors.password}</span>
-              </div>
-            )}
           </div>
+          {state.errors?.password && (
+            <div className="label">
+              <span className="label-text-alt text-error">
+                {state.errors.password}
+              </span>
+            </div>
+          )}
         </label>
         <SubmitButton />
       </form>
       {state.message && (
-        <>
+        <div className="flex gap-1">
           <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
           <p className="text-sm text-red-500">{state.message}</p>
-        </>
+        </div>
       )}
     </>
   );

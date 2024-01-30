@@ -12,7 +12,7 @@ interface SignInProps {
   };
   formState: {
     state: any;
-    dispatch: (payload: any) => void;
+    dispatch: (payload: FormData) => Promise<void>;
   };
 }
 

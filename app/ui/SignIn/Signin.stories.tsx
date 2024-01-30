@@ -32,10 +32,40 @@ export const Default: Story = {
     },
     formState: {
       state: { message: null, errors: null },
-      dispatch: (payload: any) => {
-        for (const [key, value] of Object.entries(payload)) {
+      dispatch: async (payload: FormData) => {
+        payload.forEach((value, key) => {
           console.log(`${key}: ${value}`);
-        }
+        });
+      },
+    },
+  },
+};
+
+export const Error: Story = {
+  args: {
+    actions: {
+      discord: async () => {
+        console.log("Discord");
+      },
+      google: async () => {
+        console.log("Google");
+      },
+      twitch: async () => {
+        console.log("Twitch");
+      },
+    },
+    formState: {
+      state: {
+        message: "There was an error",
+        errors: {
+          email: ["Email is required"],
+          password: ["Password is required"],
+        },
+      },
+      dispatch: async (payload: FormData) => {
+        payload.forEach((value, key) => {
+          console.log(`${key}: ${value}`);
+        });
       },
     },
   },
