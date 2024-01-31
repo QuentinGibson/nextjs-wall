@@ -1,28 +1,28 @@
 import Image from "next/image";
-import { Press_Start, sans, silkscreen } from "../../fonts";
+import { sans, silkscreen } from "@/app/fonts";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { HeartIcon as HeartIconOutline } from "@heroicons/react/24/outline";
+import { Prisma } from "@prisma/client";
 
 interface PostProps {
-  avatar: string;
-  subject: string;
-  content: string;
-  likes: number;
+  post: Prisma.PostGetPayload<{
+    include: {
+      user: true;
+    };
+  }>;
   liked: boolean;
   likeDispatch?: (payload: any) => void;
 }
 export async function Post({
-  avatar,
-  subject,
-  content,
-  likes,
+  post: { content, subject, likes, user },
   liked,
   likeDispatch,
 }: PostProps) {
+  const { username, avatar } = user;
   return (
     // TODO: Add Diasy UI border color
     <div
-      className={`post-body border border-base-300 p-4 bg-base-100 md:h-[240px] flex`}
+      className={`post-body border border-base-300 p-4 bg-base-100 h-[500px] md:h-[300px] flex`}
     >
       <div className="flex flex-col md:flex-row gap-7 flex-grow">
         <div className="avatar justify-center items-center">
@@ -36,17 +36,20 @@ export async function Post({
           </div>
         </div>
         <div className={`flex flex-col gap-5 flex-1 justify-between`}>
-          <p className={`text-2xl leading-5 ${silkscreen.className}`}>
-            {subject}
-          </p>
+          <div className="flex flex-col gap-2">
+            <p className={`${sans.className}`}>{username}</p>
+            <p className={`text-2xl leading-5 ${silkscreen.className}`}>
+              {subject}
+            </p>
+          </div>
           <p
-            className={`text-base leading-5 ${sans.className} overflow-auto h-[130px]`}
+            className={`text-base leading-5 ${sans.className} overflow-auto grow h-[130px]`}
           >
             {content}
           </p>
           <div className="flex items-center gap-3">
             {/* TODO: Add like function via a button element */}
-            <form action={likeDispatch?.bind(null, liked)}>
+            <form action={likeDispatch?.bind(null, { liked, user })}>
               <button type="submit">
                 {liked ? (
                   <HeartIconSolid
@@ -63,7 +66,6 @@ export async function Post({
                 )}
               </button>
             </form>
-
             <span className={`${silkscreen.className}`}>{likes}</span>
           </div>
         </div>

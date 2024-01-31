@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Session } from "next-auth";
 
 const Navlinks = [
   { label: "Home", route: "/" },
@@ -7,10 +8,10 @@ const Navlinks = [
 ];
 
 export default async function Navigation({
-  pageTitle,
+  session,
   children,
 }: {
-  pageTitle: string;
+  session: Session | null;
   children: React.ReactNode;
 }) {
   return (
@@ -43,22 +44,48 @@ export default async function Navigation({
           <div className="flex-1 px-2 mx-2">
             <div className="flex flex-col">
               <p>Quentin Gibson</p>
-              <p>{pageTitle}</p>
+              <p>Portfolio</p>
             </div>
           </div>
           <div className="flex-none hidden lg:block">
             <ul className="menu menu-horizontal">
-              {/* Navbar menu content here */}
               {Navlinks.map((link, index) => (
                 <li key={index}>
                   <Link href={link.route}>{link.label}</Link>
                 </li>
               ))}
+              {session ? (
+                <>
+                  <li>
+                    <Link className={`ml-2 link-primary`} href={"/login"}>
+                      Log Out
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className={`ml-2 link-primary`} href={"/profile"}>
+                      Profile
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link className={`ml-2 link-primary`} href={"/login"}>
+                      Log In
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className={`ml-2 link-secondary `} href={"/signup"}>
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
         {/* Page content here */}
-        {children}
+        <main className="py-8">{children}</main>
       </div>
       <div className="drawer-side">
         <ul className="menu p-4 w-80 min-h-full bg-base-200">
@@ -80,6 +107,33 @@ export default async function Navigation({
               </Link>
             </li>
           ))}
+          {session ? (
+            <>
+              <li>
+                <Link className={`ml-2 link-primary`} href={"/login"}>
+                  Log Out
+                </Link>
+              </li>
+              <li>
+                <Link className={`ml-2 link-primary`} href={"/profile"}>
+                  Profile
+                </Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link className={`ml-2 link-primary`} href={"/login"}>
+                  Log In
+                </Link>
+              </li>
+              <li>
+                <Link className={`ml-2 link-secondary `} href={"/signup"}>
+                  Sign Up
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>
