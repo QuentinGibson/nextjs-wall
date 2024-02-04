@@ -20,12 +20,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  console.log(`Root Session: ${session}`);
   return (
     <html lang="en" data-theme="valentine">
       <body>
-        <Layout>
-          <Navigation session={session}>{children}</Navigation>
-        </Layout>
+        <Navigation session={session}>{children}</Navigation>
       </body>
     </html>
   );

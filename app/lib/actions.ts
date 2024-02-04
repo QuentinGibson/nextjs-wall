@@ -1,5 +1,23 @@
+"use server";
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
+import { AuthError } from "next-auth";
+import { signIn } from "@/auth";
+import { RegisterSchema } from "./schemas";
+import { ZodIssue, z } from "zod";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import brcypt from "bcrypt";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+
+export interface State {
+  message: string | undefined;
+  errors:
+    | {
+        [key: string]: string[] | undefined;
+      }
+    | undefined;
+}
 
 export const getPosts = async (): Promise<{
   status: string;
@@ -44,8 +62,134 @@ export const updateUser = async (id: string, data: Prisma.UserUpdateInput) => {
   });
 };
 
-export const getUser = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id },
-  });
+export const getUser = async (
+  username: string
+): Promise<null | Prisma.UserGetPayload<{ include: Prisma.UserSelect }>> => {
+  try {
+    return await prisma.user.findUnique({
+      where: { username },
+    });
+  } catch (e) {
+    return null;
+  }
+};
+
+export async function authenticate(
+  prevState: string | void,
+  formData: FormData,
+  callBack?: string | null
+): Promise<string | void> {
+  try {
+    await signIn("credentials", formData, callBack || "/home");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function authenticateWithGoogle() {
+  try {
+    await signIn("google");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "OAuthSignInError":
+          return "Failed to authenticate with Google.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function authenticateWithDiscord() {
+  try {
+    await signIn("discord");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "OAuthSignInError":
+          return "Failed to authenticate with Discord.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function authtenticateWithTwitch() {
+  try {
+    await signIn("twitch");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "OAuthSignInError":
+          return "Failed to authenticate with Twitch.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function registerUser(
+  prevState: State,
+  formData: FormData
+): Promise<State> {
+  const usernameData = formData.get("username") as string;
+  const emailData = formData.get("email") as string;
+  const passwordData = formData.get("password") as string;
+  const passwordConfirmationData = formData.get(
+    "passwordConfirmation"
+  ) as string;
+  const data: z.infer<typeof RegisterSchema> = {
+    username: usernameData,
+    email: emailData,
+    password: passwordData,
+    passwordConfirmation: passwordConfirmationData,
+  };
+  const validateData = RegisterSchema.safeParse(data);
+  if (!validateData.success) {
+    const errors = validateData.error.flatten().fieldErrors;
+    return { message: "Invalid data", errors };
+  }
+  const { username, email, password } = validateData.data;
+  const userData: Prisma.UserCreateInput = {
+    username,
+    email,
+    password: await brcypt.hash(password, 10),
+  };
+  try {
+    await prisma.user.create({ data: userData });
+  } catch (e) {
+    return {
+      message: "Failed to create user, please try again later!",
+      errors: undefined,
+    };
+  }
+
+  revalidatePath("/home");
+  redirect("/home");
+}
+
+export const getVerificationTokenByEmail = async (email: string) => {
+  try {
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { identifier: email },
+    });
+
+    return verificationToken;
+  } catch {
+    return null;
+  }
 };

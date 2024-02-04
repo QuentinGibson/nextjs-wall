@@ -14,6 +14,7 @@ export default async function Navigation({
   session: Session | null;
   children: React.ReactNode;
 }) {
+  console.log(`Session: ${session}`);
   return (
     <div className="drawer">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />

@@ -1,4 +1,5 @@
 //TODO: Fix tablet view
+"use client";
 
 import Link from "next/link";
 import {
@@ -9,29 +10,16 @@ import { sans } from "@/app/fonts";
 import React from "react";
 import SocialButton from "../SocialButton";
 import { CheckCircleIcon, LockClosedIcon } from "@heroicons/react/24/solid";
+import { authenticateWithGoogle, registerUser } from "@/app/lib/actions";
+import { useFormState } from "react-dom";
 
-interface SignUpPageProps {
-  formState: {
-    dispatch: (payload: FormData) => void;
-    state: {
-      message: string | null;
-      errors: {
-        email: string[] | undefined;
-        password: string[] | undefined;
-        verify: string[] | undefined;
-      } | null;
-    };
-  };
-  actions: {
-    ["google"]: () => Promise<void>;
-    ["discord"]: () => Promise<void>;
-    ["twitch"]: () => Promise<void>;
-  };
-}
-
-export default function SignUp({ formState, actions }: SignUpPageProps) {
+export default function SignUp() {
+  const [state, dispatch] = useFormState(registerUser, {
+    message: undefined,
+    errors: {},
+  });
   return (
-    <div className="md:grid md:grid-cols-[1fr_2fr] md:gap-8">
+    <div className="">
       <section
         className={`inline-flex flex-col justify-center gap-7 ${sans.className}`}
       >
@@ -40,7 +28,7 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
             Already a member?{" "}
             <Link
               className="link-hover link font-bold link-primary"
-              href={"/signin"}
+              href={"/login"}
             >
               Sign In
             </Link>
@@ -57,7 +45,7 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
                 altText="Googe G"
                 image="logos/Google_G_Logo.svg"
                 brand="Google"
-                callback={actions.google}
+                callback={authenticateWithGoogle}
               />
             </div>
           </div>
@@ -68,7 +56,7 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
             </span>
             <form
               className="flex w-full flex-col items-center justify-center gap-4"
-              action={formState.dispatch}
+              action={dispatch}
             >
               <label className="form-control w-full">
                 <div className="label">
@@ -83,7 +71,26 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
                     name="email"
                   />
                 </div>
-                {formState.state.errors?.email?.map((error, index) => (
+                {state.errors?.email?.map((error, index) => (
+                  <div className="label" key={index}>
+                    <span className="label-text-alt text-error">{error}</span>
+                  </div>
+                ))}
+              </label>
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Username:</span>
+                </div>
+                <div className="inline-flex w-full items-center justify-start gap-2.5 self-stretch rounded-xl bg-base-200 p-3">
+                  <EnvelopeIcon width={24} height={24} />
+                  <input
+                    type="text"
+                    placeholder="Enter username"
+                    className="input w-full max-w-xs bg-base-200"
+                    name="username"
+                  />
+                </div>
+                {state.errors?.username?.map((error, index) => (
                   <div className="label" key={index}>
                     <span className="label-text-alt text-error">{error}</span>
                   </div>
@@ -102,7 +109,7 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
                     name="password"
                   />
                 </div>
-                {formState.state.errors?.password?.map((error, index) => (
+                {state.errors?.password?.map((error, index) => (
                   <div className="label" key={index}>
                     <span className="label-text-alt text-error">{error}</span>
                   </div>
@@ -118,10 +125,10 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
                     type="password"
                     placeholder="Verify password"
                     className="input w-full max-w-xs bg-base-200"
-                    name="verify"
+                    name="passwordConfirmation"
                   />
                 </div>
-                {formState.state.errors?.verify?.map((error, index) => (
+                {state.errors?.passwordConfirmation?.map((error, index) => (
                   <div className="label" key={index}>
                     <span className="label-text-alt text-error">{error}</span>
                   </div>
@@ -135,10 +142,10 @@ export default function SignUp({ formState, actions }: SignUpPageProps) {
                 Sign Up
               </button>
             </form>
-            {formState.state.message && (
+            {state?.message && (
               <div className="flex gap-1">
                 <ExclamationCircleIcon className="h-5 w-5 text-error" />
-                <p className="text-sm text-error">{formState.state.message}</p>
+                <p className="text-sm text-error">{state.message}</p>
               </div>
             )}
           </div>

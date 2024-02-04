@@ -1,32 +1,41 @@
 import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { getUser } from "./app/lib/actions";
 import { authConfig } from "./auth.config";
 import Google from "@auth/core/providers/google";
 import CredentialsProvider from "@auth/core/providers/credentials";
+import prisma from "./app/lib/prisma";
 
 export const {
   handlers: { GET, POST },
   auth,
+  signIn,
+  signOut,
 } = NextAuth({
   ...authConfig,
+  adapter: PrismaAdapter(prisma),
+  debug: true,
   providers: [
     Google,
     CredentialsProvider({
       async authorize(credentials) {
         const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
+          .object({ username: z.string(), password: z.string().min(6) })
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
+          const { username, password } = parsedCredentials.data;
+
+          const user = await getUser(username);
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
+          console.log(`Passwords match: ${passwordsMatch}, Returning user`);
           if (passwordsMatch) return user;
         }
+
         console.log("Invalid credentials");
         return null;
       },

@@ -6,17 +6,13 @@ import SocialButton from "@/app/ui/SocialButton";
 
 interface SignInProps {
   actions: {
-    ["google"]: () => Promise<void>;
-    ["discord"]: () => Promise<void>;
-    ["twitch"]: () => Promise<void>;
-  };
-  formState: {
-    state: any;
-    dispatch: (payload: FormData) => Promise<void>;
+    ["google"]: () => Promise<string | undefined>;
+    ["discord"]: () => Promise<string | undefined>;
+    ["twitch"]: () => Promise<string | undefined>;
   };
 }
 
-export default function SignIn({ actions, formState }: SignInProps) {
+export default async function SignIn({ actions }: SignInProps) {
   return (
     <section
       className={`inline-flex flex-col justify-center gap-7 md:w-96 ${sans.className}`}
@@ -53,7 +49,7 @@ export default function SignIn({ actions, formState }: SignInProps) {
           <span className="self-stretch text-sm font-semibold leading-none">
             Or continue with email address
           </span>
-          <SigninForm state={formState.state} dispatch={formState.dispatch} />
+          <SigninForm />
         </div>
       </div>
       <p className="self-stretch text-sm font-semibold leading-normal ">
