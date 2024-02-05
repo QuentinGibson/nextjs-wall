@@ -4,15 +4,9 @@ import { sans } from "@/app/fonts";
 import React from "react";
 import SocialButton from "@/app/ui/SocialButton";
 
-interface SignInProps {
-  actions: {
-    ["google"]: () => Promise<string | undefined>;
-    ["discord"]: () => Promise<string | undefined>;
-    ["twitch"]: () => Promise<string | undefined>;
-  };
-}
+interface SignInProps {}
 
-export default async function SignIn({ actions }: SignInProps) {
+export default async function SignIn() {
   return (
     <section
       className={`inline-flex flex-col justify-center gap-7 md:w-96 ${sans.className}`}
@@ -25,22 +19,10 @@ export default async function SignIn({ actions }: SignInProps) {
           </h2>
           <div className="grid grid-cols-2 items-center justify-center gap-2">
             <SocialButton
-              callback={actions.google}
-              altText="Googe G"
-              image="logos/Google_G_Logo.svg"
               brand="Google"
-            />
-            <SocialButton
-              callback={actions.discord}
-              altText="Discord Logo"
-              image="logos/discord-mark-blue.svg"
-              brand="Discord"
-            />
-            <SocialButton
-              callback={actions.twitch}
-              altText="Twitch Logo"
-              image="logos/TwitchGlitchPurple.svg"
-              brand="Twitch"
+              altText="Google G"
+              image="logos/Google_G_Logo.svg"
+              provider={"google"}
             />
           </div>
         </div>

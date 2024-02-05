@@ -8,9 +8,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { sans } from "@/app/fonts";
 import React from "react";
-import SocialButton from "../SocialButton";
+// import SocialButton from "../SocialButton";
 import { CheckCircleIcon, LockClosedIcon } from "@heroicons/react/24/solid";
-import { authenticateWithGoogle, registerUser } from "@/app/lib/actions";
+import { registerUser } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 
 export default function SignUp() {
@@ -41,12 +41,12 @@ export default function SignUp() {
               Sign up with Open accounts
             </h2>
             <div className="grid grid-cols-2 items-center justify-center gap-2">
-              <SocialButton
+              {/* <SocialButton
                 altText="Googe G"
                 image="logos/Google_G_Logo.svg"
                 brand="Google"
                 callback={authenticateWithGoogle}
-              />
+              /> */}
             </div>
           </div>
           <div className="relative h-0.5 w-full rounded-sm bg-base-200" />

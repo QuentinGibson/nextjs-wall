@@ -2,13 +2,12 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { AuthError } from "next-auth";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { RegisterSchema } from "./schemas";
-import { ZodIssue, z } from "zod";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export interface State {
   message: string | undefined;
@@ -22,7 +21,7 @@ export interface State {
 export const getPosts = async (): Promise<{
   status: string;
 
-  posts: Prisma.PostGetPayload<{ include: { user: true } }>[] | [];
+  posts: Prisma.PostGetPayload<{ include: { author: true } }>[] | [];
   errors: unknown;
 }> => {
   let res;
@@ -62,9 +61,7 @@ export const updateUser = async (id: string, data: Prisma.UserUpdateInput) => {
   });
 };
 
-export const getUser = async (
-  username: string
-): Promise<null | Prisma.UserGetPayload<{ include: Prisma.UserSelect }>> => {
+export const getUser = async (username: string) => {
   try {
     return await prisma.user.findUnique({
       where: { username },
@@ -92,48 +89,19 @@ export async function authenticate(
     }
     throw error;
   }
+
+  revalidatePath("/home");
+  redirect("/home");
 }
 
-export async function authenticateWithGoogle() {
+export async function authenticateWithOuath(provider: string) {
   try {
-    await signIn("google");
+    await signIn(provider, { callbackUrl: "/home" });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "OAuthSignInError":
-          return "Failed to authenticate with Google.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
-  }
-}
-
-export async function authenticateWithDiscord() {
-  try {
-    await signIn("discord");
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "OAuthSignInError":
-          return "Failed to authenticate with Discord.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
-  }
-}
-
-export async function authtenticateWithTwitch() {
-  try {
-    await signIn("twitch");
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "OAuthSignInError":
-          return "Failed to authenticate with Twitch.";
+          return "Failed to authenticate with Provider.";
         default:
           return "Something went wrong.";
       }

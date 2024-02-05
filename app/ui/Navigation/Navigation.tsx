@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Session } from "next-auth";
+import { signOut } from "@/auth";
+import Image from "next/image";
 
 const Navlinks = [
   { label: "Home", route: "/" },
@@ -14,7 +16,6 @@ export default async function Navigation({
   session: Session | null;
   children: React.ReactNode;
 }) {
-  console.log(`Session: ${session}`);
   return (
     <div className="drawer">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -44,8 +45,14 @@ export default async function Navigation({
           </div>
           <div className="flex-1 px-2 mx-2">
             <div className="flex flex-col">
-              <p>Quentin Gibson</p>
-              <p>Portfolio</p>
+              <Link href={"/home"}>
+                <Image
+                  src={"/qg-logo.svg"}
+                  height={80}
+                  width={50}
+                  alt={"Logo"}
+                />
+              </Link>
             </div>
           </div>
           <div className="flex-none hidden lg:block">
@@ -58,9 +65,19 @@ export default async function Navigation({
               {session ? (
                 <>
                   <li>
-                    <Link className={`ml-2 link-primary`} href={"/login"}>
-                      Log Out
-                    </Link>
+                    <form
+                      action={async () => {
+                        "use server";
+                        await signOut();
+                      }}
+                    >
+                      <button
+                        className={`ml-2 md:ml-0 link-primary`}
+                        type="submit"
+                      >
+                        Log Out
+                      </button>
+                    </form>
                   </li>
                   <li>
                     <Link className={`ml-2 link-primary`} href={"/profile"}>
@@ -111,9 +128,16 @@ export default async function Navigation({
           {session ? (
             <>
               <li>
-                <Link className={`ml-2 link-primary`} href={"/login"}>
-                  Log Out
-                </Link>
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut();
+                  }}
+                >
+                  <button className={`ml-2 link-primary`} type="submit">
+                    Log Out
+                  </button>
+                </form>
               </li>
               <li>
                 <Link className={`ml-2 link-primary`} href={"/profile"}>

@@ -1,16 +1,12 @@
-import {
-  authenticateWithGoogle,
-  authenticateWithDiscord,
-  authtenticateWithTwitch,
-} from "@/app/lib/actions";
+import { auth } from "@/auth";
 import SignIn from "./SignIn";
+import { SessionProvider } from "next-auth/react";
 
 export default async function SignInDB() {
-  const actions = {
-    google: authenticateWithGoogle,
-    twitch: authtenticateWithTwitch,
-    discord: authenticateWithDiscord,
-  };
-
-  return <SignIn actions={actions} />;
+  const session = await auth();
+  return (
+    <SessionProvider session={session}>
+      <SignIn />
+    </SessionProvider>
+  );
 }

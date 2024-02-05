@@ -17,8 +17,15 @@ export const {
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   debug: true,
+  session: {
+    strategy: "jwt",
+    maxAge: 3 * 24 * 60 * 60, // 3 days
+  },
   providers: [
-    Google,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       async authorize(credentials) {
         const parsedCredentials = z
@@ -32,11 +39,11 @@ export const {
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
-          console.log(`Passwords match: ${passwordsMatch}, Returning user`);
+          console.log(`Passwords match: ${passwordsMatch}`);
           if (passwordsMatch) return user;
         }
 
-        console.log("Invalid credentials");
+        console.log("Invalid credentials!");
         return null;
       },
     }),
