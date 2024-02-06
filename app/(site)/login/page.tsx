@@ -1,4 +1,4 @@
-import SignInDB from "../ui/SignIn/SignInDB";
+import SignInDB from "../../ui/SignIn/SignInDB";
 
 export default async function LoginPage() {
   return (

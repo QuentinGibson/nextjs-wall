@@ -8,6 +8,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
+import { Resend } from "resend";
 
 export interface State {
   message: string | undefined;
@@ -92,22 +93,6 @@ export async function authenticate(
 
   revalidatePath("/home");
   redirect("/home");
-}
-
-export async function authenticateWithOuath(provider: string) {
-  try {
-    await signIn(provider, { callbackUrl: "/home" });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "OAuthSignInError":
-          return "Failed to authenticate with Provider.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
-  }
 }
 
 export async function registerUser(

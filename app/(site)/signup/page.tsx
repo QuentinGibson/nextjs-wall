@@ -1,4 +1,4 @@
-import SignUp from "../ui/SignUp/SignUp";
+import SignUp from "../../ui/SignUp/SignUp";
 
 export default async function SignUpPage() {
   return (

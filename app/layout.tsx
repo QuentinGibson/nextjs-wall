@@ -22,9 +22,7 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en" data-theme="valentine">
-      <body>
-        <Navigation session={session}>{children}</Navigation>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

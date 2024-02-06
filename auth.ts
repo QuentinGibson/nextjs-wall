@@ -16,7 +16,7 @@ export const {
 } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
-  debug: true,
+  debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
     maxAge: 3 * 24 * 60 * 60, // 3 days

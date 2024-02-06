@@ -1,14 +1,12 @@
 "use client";
-import {
-  EnvelopeIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { UserIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { authenticate } from "@/app/lib/actions";
 import { useFormState, useFormStatus } from "react-dom";
 
 export default function SigninForm() {
   const [state, dispatch] = useFormState(authenticate, undefined);
+
   return (
     <>
       <form
@@ -20,7 +18,7 @@ export default function SigninForm() {
             <span className="label-text">Username:</span>
           </div>
           <div className="inline-flex w-full items-center justify-start gap-2.5 self-stretch rounded-xl bg-base-200 p-3">
-            <EnvelopeIcon width={24} height={24} />
+            <UserIcon width={24} height={24} />
             <input
               type="text"
               placeholder="Enter username"
