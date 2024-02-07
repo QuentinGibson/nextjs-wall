@@ -16,7 +16,9 @@ export default async function Algorithm({ name, icon }: AlgorithmProps) {
           alt={`A representation of ${name}`}
         />
       </div>
-      <p className={`text-base-content ${silkscreen.className}`}>{name}</p>
+      <p className={`text-base-content ${silkscreen.className} text-center`}>
+        {name}
+      </p>
     </div>
   );
 }

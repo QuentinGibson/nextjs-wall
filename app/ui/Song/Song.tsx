@@ -5,6 +5,7 @@ import { sans, silkscreen } from "../../fonts";
 interface SongProps {
   name: string;
   artist: string;
+  album: string;
   cover: string;
   content: string;
   flipped?: boolean;
@@ -12,6 +13,7 @@ interface SongProps {
 export default async function Song({
   name,
   artist,
+  album,
   cover,
   content,
   flipped = false,
@@ -34,6 +36,7 @@ export default async function Song({
       >
         <p className={`${silkscreen.className} text-lg md:text-3xl`}>{name}</p>
         <p className={`${silkscreen.className} text-sm`}>{artist}</p>
+        <p className={`${silkscreen.className} text-sm`}>{album}</p>
         <p className={`${sans.className}`}>{content}</p>
       </div>
     </div>

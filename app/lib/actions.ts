@@ -21,7 +21,6 @@ export interface State {
 
 export const getPosts = async (): Promise<{
   status: string;
-
   posts: Prisma.PostGetPayload<{ include: { author: true } }>[] | [];
   errors: unknown;
 }> => {

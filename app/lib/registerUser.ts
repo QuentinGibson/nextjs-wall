@@ -6,8 +6,9 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
-import { setFlash } from "./flash-toast";
 import { State } from "./actions";
+import { randomUUID } from "crypto";
+import { sendVerificationEmail } from "./email";
 
 export async function registerUser(
   prevState: State,
@@ -37,8 +38,15 @@ export async function registerUser(
     password: await brcypt.hash(password, 10),
   };
   try {
-    await prisma.user.create({ data: userData });
-    setFlash({ type: "success", message: "Logged in successfully!" });
+    const user = await prisma.user.create({ data: userData });
+    const verificationToken = await prisma.verificationToken.create({
+      data: {
+        identifier: user.email,
+        token: randomUUID(),
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 1),
+      },
+    });
+    await sendVerificationEmail(user.email, verificationToken.token);
   } catch (e) {
     return {
       message: "Failed to create user, please try again later!",
