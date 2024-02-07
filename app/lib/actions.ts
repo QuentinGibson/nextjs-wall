@@ -8,7 +8,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
-import { Resend } from "resend";
+import { setFlash } from "./flash-toast";
 
 export interface State {
   message: string | undefined;
@@ -78,7 +78,7 @@ export async function authenticate(
   callBack?: string | null
 ): Promise<string | void> {
   try {
-    await signIn("credentials", formData, callBack || "/home");
+    await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -90,9 +90,6 @@ export async function authenticate(
     }
     throw error;
   }
-
-  revalidatePath("/home");
-  redirect("/home");
 }
 
 export async function registerUser(
@@ -123,7 +120,12 @@ export async function registerUser(
     password: await brcypt.hash(password, 10),
   };
   try {
-    await prisma.user.create({ data: userData });
+    await prisma.user.create({ data: userData }).then(() => {
+      setFlash({
+        type: "success",
+        message: "Welcome! You have successfully registered!",
+      });
+    });
   } catch (e) {
     return {
       message: "Failed to create user, please try again later!",

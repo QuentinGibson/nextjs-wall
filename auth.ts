@@ -7,12 +7,14 @@ import { authConfig } from "./auth.config";
 import Google from "@auth/core/providers/google";
 import CredentialsProvider from "@auth/core/providers/credentials";
 import prisma from "./app/lib/prisma";
+import { setFlash } from "./app/lib/flash-toast";
 
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
   signOut,
+  unstable_update,
 } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
@@ -20,6 +22,31 @@ export const {
   session: {
     strategy: "jwt",
     maxAge: 3 * 24 * 60 * 60, // 3 days
+  },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      if (url.endsWith("/login")) {
+        return `${baseUrl}/home`;
+      }
+      return url;
+    },
+  },
+  events: {
+    createUser: async () => {
+      setFlash({ type: "success", message: "User created!" });
+    },
+    signIn: async () => {
+      setFlash({ type: "success", message: "Log in successfully!" });
+    },
+    signOut: async () => {
+      setFlash({ type: "success", message: "Logged out!" });
+    },
+    linkAccount: async () => {
+      setFlash({ type: "success", message: "Account linked successfully!" });
+    },
+  },
+  pages: {
+    signIn: "/login",
   },
   providers: [
     Google({

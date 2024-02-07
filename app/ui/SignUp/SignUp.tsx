@@ -10,7 +10,7 @@ import { sans } from "@/app/fonts";
 import React from "react";
 // import SocialButton from "../SocialButton";
 import { CheckCircleIcon, LockClosedIcon } from "@heroicons/react/24/solid";
-import { registerUser } from "@/app/lib/actions";
+import { registerUser } from "@/app/lib/registerUser";
 import { useFormState } from "react-dom";
 
 export default function SignUp() {
