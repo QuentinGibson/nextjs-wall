@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import UserButtons from "../UserButtons/UserButtons";
+import { useRef } from "react";
 
 const Navlinks = [
   { label: "Home", route: "/home" },
@@ -8,14 +10,22 @@ const Navlinks = [
   { label: "Contact", route: "/contact" },
 ];
 
-export default async function Navigation({
+export default function Navigation({
   children,
+  userButtons,
 }: {
   children: React.ReactNode;
+  userButtons: React.ReactNode;
 }) {
+  const drawerRef = useRef<HTMLInputElement>(null);
   return (
     <div className="drawer">
-      <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+      <input
+        id="my-drawer-3"
+        type="checkbox"
+        className="drawer-toggle"
+        ref={drawerRef}
+      />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
         <div className="w-full navbar bg-base-100">
@@ -59,7 +69,7 @@ export default async function Navigation({
                   <Link href={link.route}>{link.label}</Link>
                 </li>
               ))}
-              <UserButtons />
+              {userButtons}
             </ul>
           </div>
         </div>
@@ -81,12 +91,20 @@ export default async function Navigation({
           {/* Sidebar content here */}
           {Navlinks.map((link, index) => (
             <li key={index}>
-              <Link className="ml-2" href={link.route}>
+              <Link
+                className="ml-2"
+                href={link.route}
+                onClick={(e) => {
+                  if (drawerRef.current) {
+                    drawerRef.current.checked = false;
+                  }
+                }}
+              >
                 {link.label}
               </Link>
             </li>
           ))}
-          <UserButtons />
+          {userButtons}
         </ul>
       </div>
     </div>
