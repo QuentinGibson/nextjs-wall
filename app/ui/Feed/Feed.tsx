@@ -1,11 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Post } from "../Post/Post";
 interface FeedProps {
-  posts: Prisma.PostGetPayload<{
-    include: {
-      user: true;
-    };
-  }>[];
+  posts: Prisma.PostGetPayload<{ include: { author: true } }>[] | [];
 }
 export default async function Feed({ posts }: FeedProps) {
   return posts.length === 0 ? (

@@ -7,10 +7,10 @@ export const Press_Start = Press_Start_2P({
 
 export const silkscreen = Silkscreen({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: "400",
 });
 
 export const sans = Open_Sans({
-  weight: "400",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });

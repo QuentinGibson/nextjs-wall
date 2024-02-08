@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "@/auth";
-import { RegisterSchema } from "./schemas";
+import { ContactFormSchema, RegisterSchema } from "./schemas";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -134,6 +134,31 @@ export async function registerUser(
 
   revalidatePath("/home");
   redirect("/home");
+}
+
+export async function createContact(
+  prevState: { message: string } | void,
+  formData: FormData
+) {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const subject = formData.get("subject") as string;
+  const message = formData.get("message") as string;
+  const data = {
+    name,
+    subject,
+    email,
+    message,
+  };
+  const validatedData = ContactFormSchema.safeParse(data);
+  if (!validatedData.success) {
+    return { message: "Invalid data" };
+  }
+  try {
+    await prisma.contact.create({ data: validatedData.data });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export const getVerificationTokenByEmail = async (email: string) => {

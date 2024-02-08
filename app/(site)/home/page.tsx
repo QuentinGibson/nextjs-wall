@@ -9,17 +9,27 @@ export default async function HomePage() {
   }
 
   return (
-    <div className={`${silkscreen.className} flex flex-col items-center gap-5`}>
-      <h1 className="text-2xl">To the entire coding Community. Thank you!</h1>
-      {status === "success" ? (
-        posts.length > 0 ? (
-          <Feed posts={posts} />
-        ) : (
-          <p className="text-lg">No posts available! Make the first one!</p>
-        )
-      ) : (
-        <p className="text-lg">Oops! I could not get the posts! Try again!</p>
-      )}
-    </div>
+    <main>
+      <div>
+        <div
+          className={`${silkscreen.className} flex flex-col items-center gap-5`}
+        >
+          <h1 className="text-2xl">
+            To the entire coding Community. Thank you!
+          </h1>
+          {status === "success" ? (
+            posts.length > 0 ? (
+              <Feed posts={posts} />
+            ) : (
+              <p className="text-lg">No posts available! Make the first one!</p>
+            )
+          ) : (
+            <p className="text-lg">
+              Oops! I could not get the posts! Try again!
+            </p>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }

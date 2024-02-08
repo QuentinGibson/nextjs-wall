@@ -7,18 +7,22 @@ import { Prisma } from "@prisma/client";
 interface PostProps {
   post: Prisma.PostGetPayload<{
     include: {
-      user: true;
+      author: true;
     };
   }>;
   liked: boolean;
   likeDispatch?: (payload: any) => void;
 }
 export async function Post({
-  post: { content, subject, likes, user },
+  post: {
+    content,
+    title,
+    likes,
+    author: { username, image: avatar },
+  },
   liked,
   likeDispatch,
 }: PostProps) {
-  const { username, avatar } = user;
   return (
     // TODO: Add Diasy UI border color
     <div
@@ -28,7 +32,7 @@ export async function Post({
         <div className="avatar justify-center items-center">
           <div className="rounded-full w-24 h-24">
             <Image
-              src={avatar}
+              src={avatar || "/avatars/default.png"}
               alt="Avatar of post creator"
               width={100}
               height={100}
@@ -39,7 +43,7 @@ export async function Post({
           <div className="flex flex-col gap-2">
             <p className={`${sans.className}`}>{username}</p>
             <p className={`text-2xl leading-5 ${silkscreen.className}`}>
-              {subject}
+              {title}
             </p>
           </div>
           <p
@@ -49,7 +53,7 @@ export async function Post({
           </p>
           <div className="flex items-center gap-3">
             {/* TODO: Add like function via a button element */}
-            <form action={likeDispatch?.bind(null, { liked, user })}>
+            <form action={likeDispatch}>
               <button type="submit">
                 {liked ? (
                   <HeartIconSolid
