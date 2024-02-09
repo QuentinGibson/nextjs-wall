@@ -36,6 +36,17 @@ export const getPosts = async (): Promise<{
   return res;
 };
 
+export const getPostsByUser = async (id: string) => {
+  try {
+    return await prisma.post.findMany({
+      where: { authorId: id },
+    });
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+};
+
 export const createPost = async (data: Prisma.PostCreateInput) => {
   return await prisma.post.create({
     data,
@@ -65,6 +76,16 @@ export const getUser = async (username: string) => {
   try {
     return await prisma.user.findUnique({
       where: { username },
+    });
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getUserByEmail = async (email: string) => {
+  try {
+    return await prisma.user.findUnique({
+      where: { email },
     });
   } catch (e) {
     return null;

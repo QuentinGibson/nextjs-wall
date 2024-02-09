@@ -31,6 +31,7 @@ export const {
       return url;
     },
   },
+
   events: {
     createUser: async () => {
       setFlash({ type: "success", message: "User created!" });
