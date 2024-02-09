@@ -2,13 +2,14 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { AuthError } from "next-auth";
-import { signIn, signOut } from "@/auth";
-import { ContactFormSchema, RegisterSchema } from "./schemas";
+import { auth, signIn, signOut } from "@/auth";
+import { ContactFormSchema, NewPostSchema, RegisterSchema } from "./schemas";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
 import { setFlash } from "./flash-toast";
+import { getPostInstallTrigger } from "@prisma/client/scripts/postinstall.js";
 
 export interface State {
   message: string | undefined;
@@ -18,6 +19,26 @@ export interface State {
       }
     | undefined;
 }
+
+export const getLiked = async (email: string, postId: string) => {
+  const user = await getUserByEmail(email);
+  if (!user) return false;
+  const liked = await prisma.userLike.findFirst({
+    where: { userId: user.id, postId },
+  });
+  return !!liked;
+};
+
+export const getNumberOfLikes = async (post_id: string) => {
+  try {
+    return await prisma.userLike.count({
+      where: { postId: post_id },
+    });
+  } catch (e) {
+    console.error(e);
+    return 0;
+  }
+};
 
 export const getPosts = async (): Promise<{
   status: string;
@@ -42,15 +63,93 @@ export const getPostsByUser = async (id: string) => {
       where: { authorId: id },
     });
   } catch (e) {
-    console.error(e);
     return [];
   }
 };
 
-export const createPost = async (data: Prisma.PostCreateInput) => {
-  return await prisma.post.create({
-    data,
-  });
+export const createPost = async (
+  prevState: State,
+  formData: FormData
+): Promise<State> => {
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const session = await auth();
+  if (!session?.user?.email) {
+    return { message: "You must be logged in to create a post", errors: {} };
+  }
+  const user = await getUserByEmail(session.user.email);
+  const data = {
+    title,
+    content,
+  };
+  const validatedData = NewPostSchema.safeParse(data);
+
+  if (!validatedData.success) {
+    const errors = validatedData.error.flatten().fieldErrors;
+    return { message: "Invalid data", errors };
+  }
+
+  const goodData = {
+    title: validatedData.data.title,
+    content: validatedData.data.content,
+    author: { connect: { id: user!.id } },
+  };
+
+  try {
+    await prisma.post.create({ data: goodData });
+    return { message: "Post created successfully", errors: undefined };
+  } catch (e) {
+    console.error(e);
+    return { message: "Failed to create post", errors: undefined };
+  }
+};
+
+export const createLike = async (postId: string, userId: string) => {
+  try {
+    await prisma.userLike.create({
+      data: {
+        postId,
+        userId,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const deleteLike = async (postId: string, userId: string) => {
+  try {
+    await prisma.userLike.deleteMany({
+      where: {
+        postId,
+        userId,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const toggleLike = async (prevState: boolean, queryData: FormData) => {
+  const session = await auth();
+  const liked = prevState;
+  const postId = queryData.get("postId") as string;
+  if (!session?.user?.email) {
+    return false;
+  }
+  const user = await getUserByEmail(session.user.email);
+  if (!user) {
+    return false;
+  }
+  if (liked) {
+    await deleteLike(postId, user.id);
+    revalidatePath("/home");
+    return false;
+  } else {
+    await createLike(postId, user.id);
+    revalidatePath("/home");
+    return true;
+  }
 };
 
 export const createUser = async (data: Prisma.UserCreateInput) => {
@@ -140,12 +239,7 @@ export async function registerUser(
     password: await brcypt.hash(password, 10),
   };
   try {
-    await prisma.user.create({ data: userData }).then(() => {
-      setFlash({
-        type: "success",
-        message: "Welcome! You have successfully registered!",
-      });
-    });
+    await prisma.user.create({ data: userData });
   } catch (e) {
     return {
       message: "Failed to create user, please try again later!",
@@ -153,6 +247,10 @@ export async function registerUser(
     };
   }
 
+  setFlash({
+    type: "success",
+    message: "Welcome! You have successfully registered!",
+  });
   revalidatePath("/home");
   redirect("/home");
 }

@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { sans, silkscreen } from "@/app/fonts";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
-import { HeartIcon as HeartIconOutline } from "@heroicons/react/24/outline";
 import { Prisma } from "@prisma/client";
+import { getLiked, getNumberOfLikes } from "@/app/lib/actions";
+import LikeButton from "../Post/LikeButton";
+import { auth } from "@/auth";
 
 interface PostProps {
   post: Prisma.PostGetPayload<{
@@ -10,19 +11,20 @@ interface PostProps {
       author: true;
     };
   }>;
-  liked: boolean;
-  likeDispatch?: (payload: any) => void;
 }
-export async function Post({
-  post: {
-    content,
+export async function Post({ post }: PostProps) {
+  const session = await auth();
+  let liked = false;
+  if (session && session.user && session.user.email) {
+    const email = session?.user?.email;
+    liked = await getLiked(email, post.id);
+  }
+  const likes = await getNumberOfLikes(post.id);
+  const {
+    author: { image: avatar, username },
     title,
-    likes,
-    author: { username, image: avatar },
-  },
-  liked,
-  likeDispatch,
-}: PostProps) {
+    content,
+  } = post;
   return (
     // TODO: Add Diasy UI border color
     <div
@@ -32,7 +34,7 @@ export async function Post({
         <div className="avatar justify-center items-center">
           <div className="rounded-full w-24 h-24">
             <Image
-              src={avatar || "/avatars/default.png"}
+              src={avatar || "/default-avatar.png"}
               alt="Avatar of post creator"
               width={100}
               height={100}
@@ -53,23 +55,7 @@ export async function Post({
           </p>
           <div className="flex items-center gap-3">
             {/* TODO: Add like function via a button element */}
-            <form action={likeDispatch}>
-              <button type="submit">
-                {liked ? (
-                  <HeartIconSolid
-                    className="text-red-500"
-                    width={24}
-                    height={24}
-                  />
-                ) : (
-                  <HeartIconOutline
-                    className="text-base-content"
-                    width={24}
-                    height={24}
-                  />
-                )}
-              </button>
-            </form>
+            <LikeButton liked={liked} postId={post.id} />
             <span className={`${silkscreen.className}`}>{likes}</span>
           </div>
         </div>

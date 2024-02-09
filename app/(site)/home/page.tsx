@@ -17,17 +17,7 @@ export default async function HomePage() {
           <h1 className="text-2xl">
             To the entire coding Community. Thank you!
           </h1>
-          {status === "success" ? (
-            posts.length > 0 ? (
-              <Feed posts={posts} />
-            ) : (
-              <p className="text-lg">No posts available! Make the first one!</p>
-            )
-          ) : (
-            <p className="text-lg">
-              Oops! I could not get the posts! Try again!
-            </p>
-          )}
+          {posts && <Feed posts={posts} />}
         </div>
       </div>
     </main>

@@ -39,3 +39,14 @@ export const ContactFormSchema = z.object({
     .min(10, { message: "Message must be more than 10 characters" })
     .max(500, { message: "Message must be less than 500 characters" }),
 });
+
+export const NewPostSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Title must be more than 3 characters" })
+    .max(100, { message: "Title must be less than 100 characters" }),
+  content: z
+    .string()
+    .min(2, { message: "Content must be more than 2 characters" })
+    .max(500, { message: "Content must be less than 500 characters" }),
+});

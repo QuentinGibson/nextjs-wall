@@ -52,7 +52,7 @@ export default function Navigation({
           </div>
           <div className="flex-1 px-2 mx-2">
             <div className="flex flex-col">
-              <Link href={"/home"}>
+              <Link className="relative" href={"/home"}>
                 <Image
                   src={"/qg-logo.svg"}
                   height={80}

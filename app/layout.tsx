@@ -14,7 +14,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="valentine">
+    <html lang="en" data-theme="">
       <body>{children}</body>
       <FlashToaster />
     </html>
