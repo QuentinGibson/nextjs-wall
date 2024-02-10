@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import UserButtons from "../UserButtons/UserButtons";
 import { useRef } from "react";
 
 const Navlinks = [

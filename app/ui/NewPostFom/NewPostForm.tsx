@@ -1,4 +1,5 @@
 "use client";
+import { sans } from "@/app/fonts";
 import { createPost } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 
@@ -7,51 +8,61 @@ export default function NewPostForm() {
   const [state, dispatch] = useFormState(createPost, initialState);
   return (
     <form action={dispatch}>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Title</span>
+      <div className={`grid gap-4 ${sans.className}`}>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text font-bold">Title</span>
+          </div>
+          <input
+            type="text"
+            placeholder="Enter your title here"
+            className="input input-bordered w-full max-w-xs"
+            name="title"
+          />
+        </label>
+        {state.errors?.title && (
+          <div className="label">
+            <span className="label-text-alt text-error">
+              {state.errors.title}
+            </span>
+          </div>
+        )}
+        <label className="form-control">
+          <div className="label">
+            <span className="label-text font-bold">Content</span>
+          </div>
+          <textarea
+            className="textarea textarea-bordered h-24 max-w-96"
+            placeholder="Enter your message here"
+            name="content"
+          ></textarea>
+        </label>
+        {state.errors?.content && (
+          <div className="label">
+            <span className="label-text-alt text-error">
+              {state.errors.content}
+            </span>
+          </div>
+        )}
+        <div className="w-[120px]">
+          <input
+            className="btn btn-primary w-full"
+            type="submit"
+            value="Submit"
+          />
         </div>
-        <input
-          type="text"
-          placeholder="Enter your title here"
-          className="input input-bordered w-full max-w-xs"
-          name="title"
-        />
-      </label>
-      {state.errors?.title && (
-        <div className="label">
-          <span className="label-text-alt text-error">
-            {state.errors.title}
-          </span>
-        </div>
-      )}
-      <label className="form-control">
-        <div className="label">
-          <span className="label-text">Content</span>
-        </div>
-        <textarea
-          className="textarea textarea-bordered h-24"
-          placeholder="Enter your message here"
-          name="content"
-        ></textarea>
-      </label>
-      {state.errors?.content && (
-        <div className="label">
-          <span className="label-text-alt text-error">
-            {state.errors.content}
-          </span>
-        </div>
-      )}
-      <input className="btn btn-primary" type="submit" value="Submit" />
-      {state.message && (
-        <div className="label">
-          {state.errors ? (
-            <span className="label-text-alt text-error">{state.message}</span>
-          ) : (
-            <span className="label-text-alt text-success">{state.message}</span>
-          )}
-        </div>
-      )}
+        {state.message && (
+          <div className="label">
+            {state.errors ? (
+              <span className="label-text-alt text-error">{state.message}</span>
+            ) : (
+              <span className="label-text-alt text-success">
+                {state.message}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
     </form>
   );
 }

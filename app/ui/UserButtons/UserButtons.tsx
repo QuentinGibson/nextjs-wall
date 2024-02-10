@@ -7,23 +7,29 @@ export default async function UserButtons() {
     "use server";
     await signOut();
   };
+  const linkClass = `ml-2 md:ml-0 link-primary`;
   return session?.user ? (
     <>
       <li>
-        <form className="ml-2 link-primary" action={handleSignOut}>
+        <form className={linkClass} action={handleSignOut}>
           <button type="submit">Logout</button>
         </form>
       </li>
       <li>
-        <Link className={`ml-2 link-primary`} href={"/profile"}>
+        <Link className={linkClass} href={"/profile"}>
           Profile
+        </Link>
+      </li>
+      <li>
+        <Link className={`${linkClass} link-secondary`} href={"/newpost"}>
+          Write a Post
         </Link>
       </li>
     </>
   ) : (
     <>
       <li>
-        <Link className={`ml-2 link-primary`} href={"/login"}>
+        <Link className={linkClass} href={"/login"}>
           Log In
         </Link>
       </li>
