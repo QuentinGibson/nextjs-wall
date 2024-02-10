@@ -66,9 +66,14 @@ export const {
           const user = await getUser(username);
           if (!user) return null;
 
-          const passwordsMatch = await bcrypt.compare(password, user.password);
-          console.log(`Passwords match: ${passwordsMatch}`);
-          if (passwordsMatch) return user;
+          if (user.password) {
+            const passwordsMatch = await bcrypt.compare(
+              password,
+              user.password
+            );
+            console.log(`Passwords match: ${passwordsMatch}`);
+            if (passwordsMatch) return user;
+          }
         }
 
         console.log("Invalid credentials!");
