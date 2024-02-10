@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
+    "postinstall": "prisma generate",
     "build-storybook": "storybook build",
     "test:e2e": "playwright test"
   },
