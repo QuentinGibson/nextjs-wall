@@ -75,7 +75,10 @@ export const createPost = async (
   const content = formData.get("content") as string;
   const session = await auth();
   if (!session?.user?.email) {
-    return { message: "You must be logged in to create a post", errors: {} };
+    return {
+      message: "You must be logged in to create a post",
+      errors: { error: ["user not logged in"] },
+    };
   }
   const user = await getUserByEmail(session.user.email);
   const data = {
@@ -100,7 +103,10 @@ export const createPost = async (
     return { message: "Post created successfully", errors: undefined };
   } catch (e) {
     console.error(e);
-    return { message: "Failed to create post", errors: undefined };
+    return {
+      message: "Failed to create post",
+      errors: { error: ["Failed to create post"] },
+    };
   }
 };
 

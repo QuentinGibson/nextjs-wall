@@ -1,7 +1,7 @@
 "use client";
 import { sans } from "@/app/fonts";
 import { createPost } from "@/app/lib/actions";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 
 export default function NewPostForm() {
   const initialState = { message: undefined, errors: undefined };
@@ -45,11 +45,7 @@ export default function NewPostForm() {
           </div>
         )}
         <div className="w-[120px]">
-          <input
-            className="btn btn-primary w-full"
-            type="submit"
-            value="Submit"
-          />
+          <SubmitButton />
         </div>
         {state.message && (
           <div className="label">
@@ -64,5 +60,20 @@ export default function NewPostForm() {
         )}
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className={`btn btn-primary w-full`}
+      disabled={pending}
+      aria-disabled={pending}
+    >
+      {pending && <span className="loading loading-spinner" />}
+      Submit
+    </button>
   );
 }
