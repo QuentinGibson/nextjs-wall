@@ -26,10 +26,6 @@ export const ContactFormSchema = z.object({
     .string()
     .min(3, { message: "Name must be more than 3 characters" })
     .max(30, { message: "Name must be less than 30 characters" }),
-  subject: z
-    .string()
-    .min(3, { message: "Subject must be more than 3 characters" })
-    .max(30, { message: "Subject must be less than 30 characters" }),
   email: z
     .string()
     .email()
@@ -41,6 +37,17 @@ export const ContactFormSchema = z.object({
 });
 
 export const NewPostSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Title must be more than 3 characters" })
+    .max(100, { message: "Title must be less than 100 characters" }),
+  content: z
+    .string()
+    .min(2, { message: "Content must be more than 2 characters" })
+    .max(500, { message: "Content must be less than 500 characters" }),
+});
+
+export const EditPostSchema = z.object({
   title: z
     .string()
     .min(3, { message: "Title must be more than 3 characters" })

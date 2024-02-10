@@ -3,13 +3,17 @@ import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { AuthError } from "next-auth";
 import { auth, signIn, signOut } from "@/auth";
-import { ContactFormSchema, NewPostSchema, RegisterSchema } from "./schemas";
+import {
+  ContactFormSchema,
+  EditPostSchema,
+  NewPostSchema,
+  RegisterSchema,
+} from "./schemas";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
 import { setFlash } from "./flash-toast";
-import { getPostInstallTrigger } from "@prisma/client/scripts/postinstall.js";
 
 export interface State {
   message: string | undefined;
@@ -109,6 +113,37 @@ export const createPost = async (
     };
   }
 };
+
+export async function updatePost(
+  prevState: State,
+  formData: FormData
+): Promise<State> {
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const postId = formData.get("postId") as string;
+  const data = {
+    title,
+    content,
+  };
+  const validatedData = EditPostSchema.safeParse(data);
+  if (!validatedData.success) {
+    const errors = validatedData.error.flatten().fieldErrors;
+    return { message: "Invalid data", errors };
+  }
+  try {
+    await prisma.post.update({
+      where: { id: postId },
+      data: validatedData.data,
+    });
+    return { message: "Post updated successfully", errors: undefined };
+  } catch (e) {
+    console.error(e);
+    return {
+      message: "Failed to update post",
+      errors: { error: ["Failed to update post"] },
+    };
+  }
+}
 
 export const createLike = async (postId: string, userId: string) => {
   try {
@@ -267,11 +302,9 @@ export async function createContact(
 ) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
-  const subject = formData.get("subject") as string;
   const message = formData.get("message") as string;
   const data = {
     name,
-    subject,
     email,
     message,
   };
