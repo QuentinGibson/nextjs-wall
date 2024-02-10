@@ -1,15 +1,15 @@
 "use client";
 import { useFormState, useFormStatus } from "react-dom";
-import { Press_Start, sans, silkscreen } from "@/app/fonts";
+import { sans, silkscreen } from "@/app/fonts";
 import { createContact } from "@/app/lib/actions";
 
-export default function ContactForm({}) {
+export default function ContactForm() {
   const initalState = { message: "" };
   const [errorMessage, dispatch] = useFormState(createContact, initalState);
   return (
     <form
       action={dispatch}
-      className="max-w-md p-6 mx-auto border bg-base-100 rounded-xl text-base-content border-secondary"
+      className="max-w-md p-6 border bg-base-100 rounded-xl text-base-content border-secondary"
     >
       <p className={`text-xl ${silkscreen.className}`}>Say Hello</p>
       <div className="flex flex-col gap-4">
@@ -23,6 +23,7 @@ export default function ContactForm({}) {
             className={`w-full max-w-xs rounded-md input input-bordered ${sans.className}`}
             placeholder="John Doe"
             type="text"
+            name="name"
           />
         </label>
         <label className="w-full max-w-xs form-control">
@@ -35,6 +36,7 @@ export default function ContactForm({}) {
             className={`w-full max-w-xs rounded-md input input-bordered ${sans.className}`}
             placeholder="email@example.com"
             type="email"
+            name="email"
           />
         </label>
         <label htmlFor="" className="w-full max-w-sm form-control">

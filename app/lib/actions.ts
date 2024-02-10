@@ -314,6 +314,7 @@ export async function createContact(
   }
   try {
     await prisma.contact.create({ data: validatedData.data });
+    return { message: "Contact Form Created!" };
   } catch (e) {
     console.error(e);
   }

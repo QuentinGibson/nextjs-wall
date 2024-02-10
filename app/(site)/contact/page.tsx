@@ -8,24 +8,26 @@ export default async function ContactPage() {
   };
   return (
     <main>
-      <div className="px-2">
-        <section className="grid gap-3 mb-12">
-          <h1 className={`${silkscreen.className} text-3xl`}>Contact</h1>
-          <div className={`${sans.className} grid gap-3`}>
-            <p>I am currently looking for new oppurtunties</p>
-            <div className="grid gap-2">
-              <p className={`${sans.className}`}>
-                <span className="font-bold">Email:</span> {contact.email}
-              </p>
-              <p className={`${sans.className}`}>
-                <span className="font-bold">Phone:</span> {contact.phone}
-              </p>
+      <div className="px-2 sm:px-4 md:px-6">
+        <div className="">
+          <section className="grid gap-3 mb-12">
+            <h1 className={`${silkscreen.className} text-3xl`}>Contact</h1>
+            <div className={`${sans.className} grid gap-3`}>
+              <p>I am currently looking for new oppurtunties</p>
+              <div className="grid gap-2">
+                <p className={`${sans.className}`}>
+                  <span className="font-bold">Email:</span> {contact.email}
+                </p>
+                <p className={`${sans.className}`}>
+                  <span className="font-bold">Phone:</span> {contact.phone}
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-        <section>
-          <ContactForm />
-        </section>
+          </section>
+          <section>
+            <ContactForm />
+          </section>
+        </div>
       </div>
     </main>
   );
