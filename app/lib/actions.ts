@@ -290,23 +290,40 @@ export const deleteUser = async (id: string) => {
   }
 };
 
-export const updateUser = async (id: string, data: Prisma.UserUpdateInput) => {
+export const updateUser = async (
+  prevState: State,
+  formData: FormData
+): Promise<State> => {
+  const id = formData.get("id") as string;
+
   const session = await auth();
   if (!session?.user?.email) {
-    return null;
+    return {
+      message: "You must be logged in to update a user",
+      errors: { error: ["user not logged in"] },
+    };
   }
   if (session.user.id !== id) {
-    return null;
+    return {
+      message: "You are not authorized to update this user",
+      errors: { error: ["You are not authorized to update this user"] },
+    };
   }
   try {
-    return await prisma.user.update({
+    await prisma.user.update({
       where: { id },
       data,
     });
   } catch (e) {
     console.error(e);
-    return null;
+    return {
+      message: "Failed to update user",
+      errors: { error: ["Failed to update user"] },
+    };
   }
+
+  revalidatePath("/profile");
+  redirect("/profile");
 };
 
 export const getUserByUsername = async (username: string) => {
