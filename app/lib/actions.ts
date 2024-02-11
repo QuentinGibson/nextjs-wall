@@ -214,13 +214,6 @@ export async function updatePost(
 }
 
 export const createLike = async (postId: string, userId: string) => {
-  const session = await auth();
-  if (!session?.user?.email) {
-    return;
-  }
-  if (session.user.id !== userId) {
-    return;
-  }
   try {
     await prisma.userLike.create({
       data: {
@@ -234,13 +227,6 @@ export const createLike = async (postId: string, userId: string) => {
 };
 
 export const deleteLike = async (postId: string, userId: string) => {
-  const session = await auth();
-  if (!session?.user?.email) {
-    return;
-  }
-  if (session.user.id !== userId) {
-    return;
-  }
   try {
     await prisma.userLike.deleteMany({
       where: {
