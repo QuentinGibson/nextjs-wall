@@ -1,11 +1,5 @@
-import {
-  deletePost,
-  deletePostById,
-  getPostsByUser,
-  getUserByEmail,
-} from "@/app/lib/actions";
+import { deletePost, getPostsByUser, getUserByEmail } from "@/app/lib/actions";
 import { auth } from "@/auth";
-import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 
