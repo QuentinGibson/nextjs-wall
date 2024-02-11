@@ -44,6 +44,28 @@ export const getNumberOfLikes = async (post_id: string) => {
   }
 };
 
+export const getPostById = async (id: string) => {
+  try {
+    return await prisma.post.findUnique({
+      where: { id },
+    });
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getUserByPostId = async (id: string) => {
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+      select: { author: true },
+    });
+    return post?.author;
+  } catch (e) {
+    return null;
+  }
+};
+
 export const getPosts = async (): Promise<{
   status: string;
   posts: Prisma.PostGetPayload<{ include: { author: true } }>[] | [];
@@ -71,6 +93,26 @@ export const getPostsByUser = async (id: string) => {
   }
 };
 
+export const deletePostById = async (id: string) => {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return { message: "You must be logged in to delete a post" };
+  }
+  const user = await getUserByEmail(session.user.email);
+  const post = await getPostById(id);
+  if (user?.id !== post?.authorId) {
+    return { message: "You are not authorized to delete this post" };
+  }
+  try {
+    await prisma.post.delete({
+      where: { id },
+    });
+    return { message: "Post deleted", errors: undefined };
+  } catch (e) {
+    return { message: "Failed to delete post", errors: e };
+  }
+};
+
 export const createPost = async (
   prevState: State,
   formData: FormData
@@ -84,7 +126,7 @@ export const createPost = async (
       errors: { error: ["user not logged in"] },
     };
   }
-  const user = await getUserByEmail(session.user.email);
+  const user = session.user;
   const data = {
     title,
     content,
@@ -118,9 +160,30 @@ export async function updatePost(
   prevState: State,
   formData: FormData
 ): Promise<State> {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return {
+      message: "You must be logged in to update a post",
+      errors: { error: ["user not logged in"] },
+    };
+  }
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const postId = formData.get("postId") as string;
+
+  const author = await getUserByPostId(postId);
+
+  if (!author) {
+    return { message: "Post not found", errors: { error: ["Post not found"] } };
+  }
+
+  if (session.user.email === author.email) {
+    return {
+      message: "You are not authorized to update this post",
+      errors: { error: ["You are not authorized to update this post"] },
+    };
+  }
+
   const data = {
     title,
     content,
@@ -146,6 +209,13 @@ export async function updatePost(
 }
 
 export const createLike = async (postId: string, userId: string) => {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return;
+  }
+  if (session.user.id !== userId) {
+    return;
+  }
   try {
     await prisma.userLike.create({
       data: {
@@ -159,6 +229,13 @@ export const createLike = async (postId: string, userId: string) => {
 };
 
 export const deleteLike = async (postId: string, userId: string) => {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return;
+  }
+  if (session.user.id !== userId) {
+    return;
+  }
   try {
     await prisma.userLike.deleteMany({
       where: {
@@ -194,25 +271,54 @@ export const toggleLike = async (prevState: boolean, queryData: FormData) => {
 };
 
 export const createUser = async (data: Prisma.UserCreateInput) => {
-  return await prisma.user.create({
-    data,
-  });
+  try {
+    return await prisma.user.create({
+      data,
+    });
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
 
 export const deleteUser = async (id: string) => {
-  return await prisma.user.delete({
-    where: { id },
-  });
+  const session = await auth();
+  if (!session?.user?.email) {
+    return null;
+  }
+  if (session.user.id !== id) {
+    return null;
+  }
+  try {
+    return await prisma.user.delete({
+      where: { id },
+    });
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
 
 export const updateUser = async (id: string, data: Prisma.UserUpdateInput) => {
-  return await prisma.user.update({
-    where: { id },
-    data,
-  });
+  const session = await auth();
+  if (!session?.user?.email) {
+    return null;
+  }
+  if (session.user.id !== id) {
+    return null;
+  }
+  try {
+    return await prisma.user.update({
+      where: { id },
+      data,
+    });
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
 
-export const getUser = async (username: string) => {
+export const getUserByUsername = async (username: string) => {
   try {
     return await prisma.user.findUnique({
       where: { username },
@@ -234,8 +340,7 @@ export const getUserByEmail = async (email: string) => {
 
 export async function authenticate(
   prevState: string | void,
-  formData: FormData,
-  callBack?: string | null
+  formData: FormData
 ): Promise<string | void> {
   try {
     await signIn("credentials", formData);

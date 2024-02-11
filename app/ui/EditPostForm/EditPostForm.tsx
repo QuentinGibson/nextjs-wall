@@ -1,9 +1,14 @@
 "use client";
 import { sans } from "@/app/fonts";
 import { updatePost } from "@/app/lib/actions";
+import { Prisma } from "@prisma/client";
 import { useFormState, useFormStatus } from "react-dom";
 
-export default function NewPostForm() {
+export default function EditPostForm({
+  post,
+}: {
+  post: Prisma.PostGetPayload<{}>;
+}) {
   const initialState = { message: undefined, errors: undefined };
   const [state, dispatch] = useFormState(updatePost, initialState);
   return (
@@ -18,6 +23,7 @@ export default function NewPostForm() {
             placeholder="Enter your title here"
             className="input input-bordered w-full max-w-xs"
             name="title"
+            defaultValue={post.title}
           />
         </label>
         {state.errors?.title && (
@@ -34,6 +40,7 @@ export default function NewPostForm() {
           <textarea
             className="textarea textarea-bordered h-24 max-w-96"
             placeholder="Enter your message here"
+            defaultValue={post.content}
             name="content"
           ></textarea>
         </label>
@@ -44,6 +51,7 @@ export default function NewPostForm() {
             </span>
           </div>
         )}
+        <input type="hidden" name="postId" value={post.id} />
         <div className="w-[120px]">
           <SubmitButton />
         </div>
