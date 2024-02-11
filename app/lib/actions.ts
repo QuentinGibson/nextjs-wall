@@ -93,24 +93,29 @@ export const getPostsByUser = async (id: string) => {
   }
 };
 
-export const deletePostById = async (id: string) => {
+export const deletePost = async (formData: FormData) => {
   const session = await auth();
   if (!session?.user?.email) {
-    return { message: "You must be logged in to delete a post" };
+    return;
   }
-  const user = await getUserByEmail(session.user.email);
-  const post = await getPostById(id);
-  if (user?.id !== post?.authorId) {
-    return { message: "You are not authorized to delete this post" };
+  const postId = formData.get("postId") as string;
+  const user = await getUserByPostId(postId);
+  if (!user) {
+    return;
+  }
+  if (user.email !== session.user.email) {
+    return;
   }
   try {
     await prisma.post.delete({
-      where: { id },
+      where: { id: postId },
     });
-    return { message: "Post deleted", errors: undefined };
   } catch (e) {
-    return { message: "Failed to delete post", errors: e };
+    console.error(e);
   }
+
+  revalidatePath("/profile");
+  redirect("/profile");
 };
 
 export const createPost = async (

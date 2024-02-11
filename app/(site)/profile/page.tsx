@@ -1,5 +1,11 @@
-import { getPostsByUser, getUserByEmail } from "@/app/lib/actions";
+import {
+  deletePost,
+  deletePostById,
+  getPostsByUser,
+  getUserByEmail,
+} from "@/app/lib/actions";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -67,11 +73,13 @@ export default async function ProfilePage() {
                           >
                             Edit
                           </Link>
-                          <form
-                            className="text-error"
-                            action={`/api/deletepost/${post.id}`}
-                          >
-                            <input type="submit" value="Delete" />
+                          <form className="text-error" action={deletePost}>
+                            <input
+                              type="hidden"
+                              name="postId"
+                              value={post.id}
+                            />
+                            <button type="submit">Delete</button>
                           </form>
                         </div>
                       </div>
