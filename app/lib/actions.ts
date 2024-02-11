@@ -2,7 +2,7 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./prisma";
 import { AuthError } from "next-auth";
-import { auth, signIn, signOut } from "@/auth";
+import { auth, signIn } from "@/auth";
 import {
   ContactFormSchema,
   EditPostSchema,
