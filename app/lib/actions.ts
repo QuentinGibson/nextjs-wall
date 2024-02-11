@@ -393,10 +393,6 @@ export async function registerUser(
     };
   }
 
-  setFlash({
-    type: "success",
-    message: "Welcome! You have successfully registered!",
-  });
   revalidatePath("/home");
   redirect("/home");
 }
