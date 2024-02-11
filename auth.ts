@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { getUser } from "./app/lib/actions";
+import { getUserByUsername } from "./app/lib/actions";
 import { authConfig } from "./auth.config";
 import Google from "@auth/core/providers/google";
 import CredentialsProvider from "@auth/core/providers/credentials";
@@ -63,7 +63,7 @@ export const {
         if (parsedCredentials.success) {
           const { username, password } = parsedCredentials.data;
 
-          const user = await getUser(username);
+          const user = await getUserByUsername(username);
           if (!user) return null;
 
           if (user.password) {
