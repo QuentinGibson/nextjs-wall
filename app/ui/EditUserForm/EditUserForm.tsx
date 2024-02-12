@@ -1,7 +1,7 @@
 "use client";
 import { updateUser } from "@/app/lib/actions";
 import { Prisma } from "@prisma/client";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import FileUploader from "../FileUploader/FileUploader";
 
 export default function EditUserForm({
@@ -13,20 +13,43 @@ export default function EditUserForm({
   const [state, dispatch] = useFormState(updateUser, initialState);
   return (
     <form action={dispatch} encType="multipart/form-data">
-      <div>
-        <label>Username</label>
-        <input type="text" name="username" defaultValue={user.username || ""} />
-      </div>
-      <div>
-        <label>Email</label>
-        <input type="email" name="email" defaultValue={user.email} />
-      </div>
-      <FileUploader />
-      <div>
-        <button type="submit" className="btn btn-primary">
-          Save
-        </button>
+      <div className="flex flex-col gap-8">
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Username</span>
+          </div>
+          <input
+            type="text"
+            name="username"
+            defaultValue={user.username || ""}
+          />
+        </label>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Email</span>
+          </div>
+          <input type="email" name="email" defaultValue={user.email} />
+        </label>
+        <FileUploader />
+        <SubmitButton />
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <div>
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={pending}
+        aria-disabled={pending}
+      >
+        {pending && <span className="loading loading-spinner"></span>}
+        Save
+      </button>
+    </div>
   );
 }

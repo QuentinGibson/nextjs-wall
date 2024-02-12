@@ -49,8 +49,13 @@ export default function FileUploader() {
   };
 
   return (
-    <label className="block aspect-square h-40 relative overflow-hidden">
-      <Image src={imageUrl} alt="uploaded image" fill priority={true} />
+    <label className="form-control block">
+      <div className="label">
+        <span className="label-text">Pick an avatar</span>
+      </div>
+      <div className="aspect-square h-40 relative overflow-hidden">
+        <Image src={imageUrl} alt="uploaded image" fill priority={true} />
+      </div>
       <input
         style={{ display: "none" }}
         type="file"
