@@ -57,3 +57,32 @@ export const EditPostSchema = z.object({
     .min(2, { message: "Content must be more than 2 characters" })
     .max(500, { message: "Content must be less than 500 characters" }),
 });
+
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+export const UpdateUserSchema = z.object({
+  username: z
+    .string()
+    .min(3, { message: "Name must be more than 3 characters" })
+    .max(30, { message: "Name must be less than 30 characters" }),
+  email: z
+    .string()
+    .email()
+    .max(100, { message: "Email must be less than 100 characters" }),
+  image: z
+    .any()
+    .refine((files) => files?.length == 1, "Image is required.")
+    .refine(
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
+});

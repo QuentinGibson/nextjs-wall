@@ -54,7 +54,6 @@ export async function Post({ post }: PostProps) {
             {content}
           </p>
           <div className="flex items-center gap-3">
-            {/* TODO: Add like function via a button element */}
             <LikeButton liked={liked} postId={post.id} />
             <span className={`${silkscreen.className}`}>{likes}</span>
           </div>

@@ -1,10 +1,10 @@
-//TODO: Fix tablet view
 "use client";
 
 import Link from "next/link";
 import {
   EnvelopeIcon,
   ExclamationCircleIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { sans } from "@/app/fonts";
 import React from "react";
@@ -12,6 +12,7 @@ import React from "react";
 import { CheckCircleIcon, LockClosedIcon } from "@heroicons/react/24/solid";
 import { registerUser } from "@/app/lib/registerUser";
 import { useFormState } from "react-dom";
+import SocialButton from "../SocialButton";
 
 export default function SignUp() {
   const [state, dispatch] = useFormState(registerUser, {
@@ -41,12 +42,12 @@ export default function SignUp() {
               Sign up with Open accounts
             </h2>
             <div className="grid grid-cols-2 items-center justify-center gap-2">
-              {/* <SocialButton
+              <SocialButton
                 altText="Googe G"
                 image="logos/Google_G_Logo.svg"
                 brand="Google"
-                callback={authenticateWithGoogle}
-              /> */}
+                provider="google"
+              />
             </div>
           </div>
           <div className="relative h-0.5 w-full rounded-sm bg-base-200" />
@@ -82,7 +83,7 @@ export default function SignUp() {
                   <span className="label-text">Username:</span>
                 </div>
                 <div className="inline-flex w-full items-center justify-start gap-2.5 self-stretch rounded-xl bg-base-200 p-3">
-                  <EnvelopeIcon width={24} height={24} />
+                  <UserCircleIcon width={24} height={24} />
                   <input
                     type="text"
                     placeholder="Enter username"

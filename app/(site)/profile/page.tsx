@@ -27,10 +27,7 @@ export default async function ProfilePage() {
               </div>
               <h1 className="text-3xl font-bold">Profile</h1>
               <div>
-                <Link
-                  className="btn btn-primary"
-                  href={`/editprofile/${user!.id}`}
-                >
+                <Link className="btn btn-primary" href={`/editprofile`}>
                   Edit Profile
                 </Link>
               </div>

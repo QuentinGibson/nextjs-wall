@@ -2,13 +2,20 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { sans, silkscreen } from "@/app/fonts";
 import { createContact } from "@/app/lib/actions";
+import { useEffect, useRef } from "react";
 
 export default function ContactForm() {
   const initalState = { message: "" };
   const [errorMessage, dispatch] = useFormState(createContact, initalState);
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (errorMessage?.message === "Contact Form Created!" && formRef.current)
+      formRef.current.reset();
+  });
   return (
     <form
       action={dispatch}
+      ref={formRef}
       className="max-w-md p-6 border bg-base-100 rounded-xl text-base-content border-secondary"
     >
       <p className={`text-xl ${silkscreen.className}`}>Say Hello</p>
@@ -69,6 +76,7 @@ function SubmitButton() {
       aria-disabled={pending}
       disabled={pending}
     >
+      {pending && <span className="loading loading-spinner"></span>}
       Send
     </button>
   );

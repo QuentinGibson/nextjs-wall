@@ -1,13 +1,21 @@
 "use client";
 import { sans } from "@/app/fonts";
 import { createPost } from "@/app/lib/actions";
+import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 export default function NewPostForm() {
   const initialState = { message: undefined, errors: undefined };
   const [state, dispatch] = useFormState(createPost, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (!state.errors) {
+      if (formRef.current) formRef.current.reset();
+    }
+  }, [state, formRef]);
   return (
-    <form action={dispatch}>
+    <form ref={formRef} action={dispatch}>
       <div className={`grid gap-4 ${sans.className}`}>
         <label className="form-control w-full max-w-xs">
           <div className="label">

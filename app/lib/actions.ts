@@ -8,6 +8,7 @@ import {
   EditPostSchema,
   NewPostSchema,
   RegisterSchema,
+  UpdateUserSchema,
 } from "./schemas";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -122,8 +123,6 @@ export const createPost = async (
   prevState: State,
   formData: FormData
 ): Promise<State> => {
-  const title = formData.get("title") as string;
-  const content = formData.get("content") as string;
   const session = await auth();
   if (!session?.user?.email) {
     return {
@@ -131,7 +130,9 @@ export const createPost = async (
       errors: { error: ["user not logged in"] },
     };
   }
-  const user = session.user;
+  const userEmail = session.user.email;
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
   const data = {
     title,
     content,
@@ -146,7 +147,7 @@ export const createPost = async (
   const goodData = {
     title: validatedData.data.title,
     content: validatedData.data.content,
-    author: { connect: { id: user!.id } },
+    author: { connect: { email: userEmail } },
   };
 
   try {
@@ -294,34 +295,7 @@ export const updateUser = async (
   prevState: State,
   formData: FormData
 ): Promise<State> => {
-  const id = formData.get("id") as string;
-
-  const session = await auth();
-  if (!session?.user?.email) {
-    return {
-      message: "You must be logged in to update a user",
-      errors: { error: ["user not logged in"] },
-    };
-  }
-  if (session.user.id !== id) {
-    return {
-      message: "You are not authorized to update this user",
-      errors: { error: ["You are not authorized to update this user"] },
-    };
-  }
-  try {
-    await prisma.user.update({
-      where: { id },
-      data,
-    });
-  } catch (e) {
-    console.error(e);
-    return {
-      message: "Failed to update user",
-      errors: { error: ["Failed to update user"] },
-    };
-  }
-
+  //TODO: Implement updateUser
   revalidatePath("/profile");
   redirect("/profile");
 };
@@ -406,7 +380,7 @@ export async function registerUser(
 }
 
 export async function createContact(
-  prevState: { message: string } | void,
+  prevState: { message: string } | undefined,
   formData: FormData
 ) {
   const name = formData.get("name") as string;

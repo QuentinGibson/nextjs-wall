@@ -11,6 +11,7 @@ export default function EditPostForm({
 }) {
   const initialState = { message: undefined, errors: undefined };
   const [state, dispatch] = useFormState(updatePost, initialState);
+
   return (
     <form action={dispatch}>
       <div className={`grid gap-4 ${sans.className}`}>

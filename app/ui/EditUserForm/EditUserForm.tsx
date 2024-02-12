@@ -11,7 +11,7 @@ export default function EditUserForm({
   const initialState = { message: undefined, errors: undefined };
   const [state, dispatch] = useFormState(updateUser, initialState);
   return (
-    <form action={dispatch}>
+    <form action={dispatch} encType="multipart/form-data">
       <div>
         <label>Username</label>
         <input type="text" name="username" defaultValue={user.username || ""} />
