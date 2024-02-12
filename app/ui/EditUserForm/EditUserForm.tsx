@@ -2,6 +2,7 @@
 import { updateUser } from "@/app/lib/actions";
 import { Prisma } from "@prisma/client";
 import { useFormState } from "react-dom";
+import FileUploader from "../FileUploader/FileUploader";
 
 export default function EditUserForm({
   user,
@@ -20,10 +21,7 @@ export default function EditUserForm({
         <label>Email</label>
         <input type="email" name="email" defaultValue={user.email} />
       </div>
-      <div>
-        <label>Image</label>
-        <input type="file" name="image" defaultValue={user.image || ""} />
-      </div>
+      <FileUploader />
       <div>
         <button type="submit" className="btn btn-primary">
           Save
