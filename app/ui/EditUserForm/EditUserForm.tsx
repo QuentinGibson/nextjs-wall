@@ -3,16 +3,25 @@ import { updateUser } from "@/app/lib/actions";
 import { Prisma } from "@prisma/client";
 import { useFormState, useFormStatus } from "react-dom";
 import FileUploader from "../FileUploader/FileUploader";
+import { useState } from "react";
 
 export default function EditUserForm({
   user,
 }: {
   user: Prisma.UserGetPayload<{}>;
 }) {
+  const initialImageUrl = user.image || "/placeholder-image.jpg";
+  const [imageUrl, setImageUrl] = useState(initialImageUrl);
   const initialState = { message: undefined, errors: undefined };
   const [state, dispatch] = useFormState(updateUser, initialState);
   return (
-    <form action={dispatch} encType="multipart/form-data">
+    <form
+      action={(formData) => {
+        formData.set("image", imageUrl);
+        dispatch(formData);
+      }}
+      encType="multipart/form-data"
+    >
       <div className="flex flex-col gap-8">
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -30,7 +39,7 @@ export default function EditUserForm({
           </div>
           <input type="email" name="email" defaultValue={user.email} />
         </label>
-        <FileUploader />
+        <FileUploader imageUrl={imageUrl} setImageUrl={setImageUrl} />
         <SubmitButton />
       </div>
     </form>

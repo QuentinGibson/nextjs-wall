@@ -2,6 +2,8 @@
 import { sans } from "@/app/fonts";
 import { updatePost } from "@/app/lib/actions";
 import { Prisma } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 export default function EditPostForm({
@@ -13,7 +15,12 @@ export default function EditPostForm({
   const [state, dispatch] = useFormState(updatePost, initialState);
 
   return (
-    <form action={dispatch}>
+    <form
+      action={(formData) => {
+        formData.set("postId", post.id);
+        dispatch(formData);
+      }}
+    >
       <div className={`grid gap-4 ${sans.className}`}>
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -52,7 +59,6 @@ export default function EditPostForm({
             </span>
           </div>
         )}
-        <input type="hidden" name="postId" value={post.id} />
         <div className="w-[120px]">
           <SubmitButton />
         </div>

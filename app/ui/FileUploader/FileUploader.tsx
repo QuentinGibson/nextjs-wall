@@ -1,11 +1,16 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 
-export default function FileUploader() {
-  const [imageUrl, setImageUrl] = useState("/placeholder-image.jpg");
-
+export default function FileUploader({
+  imageUrl,
+  setImageUrl,
+}: {
+  imageUrl: string;
+  setImageUrl: (url: string) => void;
+}) {
   const onImageFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
 
@@ -44,8 +49,8 @@ export default function FileUploader() {
     }
 
     /** Reset file input */
-    e.target.type = "text";
-    e.target.type = "file";
+    // e.target.type = "text";
+    // e.target.type = "file";
   };
 
   return (

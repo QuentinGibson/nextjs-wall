@@ -19,7 +19,7 @@ export default async function ProfilePage() {
                   <div className="w-24 h-24 rounded-full">
                     <Image
                       alt="User select avatar"
-                      src={user?.image || "/default-avatar.png"}
+                      src={user?.image || "/uploads/avatars/default-avatar.png"}
                       fill
                     />
                   </div>

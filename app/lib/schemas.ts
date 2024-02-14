@@ -58,6 +58,7 @@ export const EditPostSchema = z.object({
     .max(500, { message: "Content must be less than 500 characters" }),
 });
 
+//TODO: Handle image upload
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -74,15 +75,5 @@ export const UpdateUserSchema = z.object({
     .string()
     .email()
     .max(100, { message: "Email must be less than 100 characters" }),
-  image: z
-    .any()
-    .refine((files) => files?.length == 1, "Image is required.")
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    ),
+  image: z.string().startsWith("/uploads/avatars"),
 });

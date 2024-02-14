@@ -34,7 +34,7 @@ export async function Post({ post }: PostProps) {
         <div className="avatar justify-center items-center">
           <div className="rounded-full w-24 h-24">
             <Image
-              src={avatar || "/default-avatar.png"}
+              src={avatar || "/uploads/avatars/default-avatar.png"}
               alt="Avatar of post creator"
               width={100}
               height={100}
