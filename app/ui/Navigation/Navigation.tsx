@@ -77,15 +77,15 @@ export default function Navigation({
       </div>
       <div className="drawer-side">
         <ul className="menu p-4 w-80 min-h-full bg-base-200">
-          <div className="flex">
+          <li className="w-10">
             <label
               htmlFor="my-drawer-3"
               aria-label="close sidebar"
-              className="drawer-overlay btn btn-square btn-ghost"
+              className="drawer-overlay"
             >
-              X
+              <div className="flex justify-center items-center">X</div>
             </label>
-          </div>
+          </li>
 
           {/* Sidebar content here */}
           {Navlinks.map((link, index) => (
