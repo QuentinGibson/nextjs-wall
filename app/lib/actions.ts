@@ -578,8 +578,8 @@ export const isUserVerified = async (email: string): Promise<boolean> => {
 };
 
 interface VerificationResult {
-  success?: string;
-  error?: string;
+  success: string;
+  error: string;
 }
 
 export const newVerification = async (
@@ -589,13 +589,13 @@ export const newVerification = async (
     where: { token },
   });
   if (!existingToken) {
-    return { error: "Token already used" };
+    return { success: "", error: "Token already used" };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (!hasExpired) {
-    return { error: "Token has expired" };
+    return { success: "", error: "Token has expired" };
   }
 
   const user = await prisma.user.findFirst({
@@ -603,7 +603,7 @@ export const newVerification = async (
   });
 
   if (!user) {
-    return { error: "User not registered" };
+    return { success: "", error: "User not registered" };
   }
 
   let today = new Date();
@@ -625,10 +625,13 @@ export const newVerification = async (
     });
   } catch (e) {
     console.log(e);
-    return { error: "Something went wrong while verifing your email." };
+    return {
+      success: "",
+      error: "Something went wrong while verifing your email.",
+    };
   }
 
-  return { success: "Account verified successfully!" };
+  return { success: "Account verified successfully!", error: "" };
 };
 
 export const createVerificationForUser = async (

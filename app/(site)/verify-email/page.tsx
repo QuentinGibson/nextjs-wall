@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 
 export default function VerifyEmailPage() {
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
 
   const searchParams = useSearchParams();
 
@@ -35,9 +35,9 @@ export default function VerifyEmailPage() {
   }, [onSubmit]);
   return (
     <div>
-      {!success && !error && <p>Verifying...</p>}
-      {success && <p>{success}</p>}
-      {!success && <p>{error}</p>}
+      {success.length === 0 && error.length === 0 && <p>Verifying...</p>}
+      {success.length && <p>{success}</p>}
+      {success.length === 0 && error.length !== 0 && <p>{error}</p>}
     </div>
   );
 }
