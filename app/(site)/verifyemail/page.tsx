@@ -1,16 +1,17 @@
 "use client";
 
 import { newVerification } from "@/app/lib/actions";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 
-export default function VerifyEmailPage() {
+export default function VerifyEmailPage({
+  searchParams,
+}: {
+  searchParams: { token: string };
+}) {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
-  const searchParams = useSearchParams();
-
-  const token = searchParams.get("token");
+  const token = searchParams.token;
 
   const onSubmit = useCallback(() => {
     if (success || error) return;
