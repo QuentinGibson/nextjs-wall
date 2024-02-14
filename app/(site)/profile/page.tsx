@@ -51,35 +51,36 @@ export default async function ProfilePage() {
             <div className="grid gap-8 ">
               <h1 className="text-2xl font-bold md:text-center">Posts</h1>
               <div className="flex flex-wrap gap-4 md:justify-center">
-                {posts.map((post) => (
-                  <div
-                    className="card w-96 bg-base-100 shadow-xl"
-                    key={post.id}
-                  >
-                    <div className="card-body">
-                      <div className="flex flex-col gap-2">
-                        <h2 className="card-title">{post.title}</h2>
-                        <p>{post.content}</p>
-                        <div className="card-actions justify-end gap-3">
-                          <Link
-                            className="text-info"
-                            href={`/editpost/${post.id}`}
-                          >
-                            Edit
-                          </Link>
-                          <form className="text-error" action={deletePost}>
-                            <input
-                              type="hidden"
-                              name="postId"
-                              value={post.id}
-                            />
-                            <button type="submit">Delete</button>
-                          </form>
+                {posts &&
+                  posts.map((post) => (
+                    <div
+                      className="card w-96 bg-base-100 shadow-xl"
+                      key={post.id}
+                    >
+                      <div className="card-body">
+                        <div className="flex flex-col gap-2">
+                          <h2 className="card-title">{post.title}</h2>
+                          <p>{post.content}</p>
+                          <div className="card-actions justify-end gap-3">
+                            <Link
+                              className="text-info"
+                              href={`/editpost/${post.id}`}
+                            >
+                              Edit
+                            </Link>
+                            <form className="text-error" action={deletePost}>
+                              <input
+                                type="hidden"
+                                name="postId"
+                                value={post.id}
+                              />
+                              <button type="submit">Delete</button>
+                            </form>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </section>

@@ -5,7 +5,7 @@ import { createContact } from "@/app/lib/actions";
 import { useEffect, useRef } from "react";
 
 export default function ContactForm() {
-  const initalState = { message: "" };
+  const initalState = { message: undefined, errors: undefined };
   const [errorMessage, dispatch] = useFormState(createContact, initalState);
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
