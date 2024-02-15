@@ -30,7 +30,7 @@ export default function NewPostForm() {
         </label>
         {state.errors?.title && (
           <div className="label">
-            <span className="label-text-alt text-error">
+            <span className="label-text-alt text-error font-bold">
               {state.errors.title}
             </span>
           </div>
@@ -47,7 +47,7 @@ export default function NewPostForm() {
         </label>
         {state.errors?.content && (
           <div className="label">
-            <span className="label-text-alt text-error">
+            <span className="label-text-alt text-error font-bold">
               {state.errors.content}
             </span>
           </div>
@@ -58,7 +58,9 @@ export default function NewPostForm() {
         {state.message && (
           <div className="label">
             {state.errors ? (
-              <span className="label-text-alt text-error">{state.message}</span>
+              <span className="label-text-alt text-error font-bold">
+                {state.message}
+              </span>
             ) : (
               <span className="label-text-alt text-success">
                 {state.message}
