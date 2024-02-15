@@ -517,13 +517,20 @@ export const newVerification = async (
     where: { token },
   });
   if (!existingToken) {
-    return { success: "", error: "Token already used" };
+    return {
+      success: "",
+      error:
+        "There was a unknown issue. Please request another verification email!",
+    };
   }
 
-  const hasExpired = new Date(existingToken.expires) < new Date();
+  const hasExpired = new Date(existingToken.expires) > new Date();
 
   if (!hasExpired) {
-    return { success: "", error: "Token has expired" };
+    return {
+      success: "",
+      error: `Token has expired. Please request another verification email!`,
+    };
   }
 
   const user = await prisma.user.findFirst({
@@ -535,16 +542,13 @@ export const newVerification = async (
   }
 
   let today = new Date();
-  let date =
-    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-
   // Only update the user and delete the token if the transaction is successful
   try {
     await prisma.$transaction(async (tx) => {
       // Update user emailVerified
       await tx.user.update({
         where: { email: existingToken.identifier },
-        data: { emailVerified: date },
+        data: { emailVerified: today },
       });
       // Delete verification token
       await tx.verificationToken.delete({

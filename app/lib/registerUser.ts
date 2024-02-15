@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import brcypt from "bcrypt";
 import { State, createVerificationForUser } from "./actions";
-import { sendVerificationEmail } from "./email";
+import { sendAWSVerifyEmail } from "./email";
 
 export async function registerUser(
   prevState: State,
@@ -50,7 +50,7 @@ export async function registerUser(
       });
 
       if (verificationToken?.token) {
-        await sendVerificationEmail(email, verificationToken.token);
+        await sendAWSVerifyEmail(email, verificationToken.token);
       } else {
         throw new Error(
           "Failed to send verification email, please try again later!"
