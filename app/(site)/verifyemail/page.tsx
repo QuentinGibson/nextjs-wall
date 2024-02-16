@@ -8,37 +8,43 @@ export default function VerifyEmailPage({
 }: {
   searchParams: { token: string };
 }) {
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
+  const [data, setData] = useState<{
+    success: string | undefined;
+    error: string | undefined;
+  }>({ success: undefined, error: undefined });
 
   const token = searchParams.token;
 
-  const onSubmit = useCallback(() => {
-    if (success || error) return;
+  const onSubmit = useCallback(async () => {
+    // If there's already a success or error message, don't do anything
+    if (data.success || data.error) return;
 
     if (!token) {
-      setError("Missing token!");
+      setData({ success: undefined, error: "Invalid token!" });
       return;
     }
 
-    newVerification(token)
-      .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
-      })
-      .catch(() => {
-        setError("Something went wrong!");
+    try {
+      let newData = await newVerification(token);
+      setData((currentData) => {
+        // If there's already a success or error message, don't overwrite it
+        if (currentData.success || currentData.error) return currentData;
+        return newData;
       });
-  }, [token, success, error]);
+    } catch (e) {
+      console.error(e);
+      setData({ success: undefined, error: "An error occurred!" });
+    }
+  }, [token, data]);
 
   useEffect(() => {
     onSubmit();
-  }, [onSubmit]);
+  }, []);
   return (
     <div>
-      {success.length === 0 && error.length === 0 && <p>Verifying...</p>}
-      {success.length && <p>{success}</p>}
-      {success.length === 0 && error.length !== 0 && <p>{error}</p>}
+      {!data.success && !data.error && <p>Verifying...</p>}
+      {data.success && <p>{data.success}</p>}
+      {!data.success && data.error && <p>{data.error}</p>}
     </div>
   );
 }
